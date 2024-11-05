@@ -20,13 +20,22 @@ public class App extends javax.swing.JFrame {
         init();
     }
     
+    /**
+     * Método de inicialização da class
+     *
+     */
     private void init() {
         showMainView();
     }
 
+    /**
+     * Mostra a janela principal do programa
+     *
+     */
     private void showMainView() {
         MainView mainView = MainView.getMainView();
         mainView.screen();
+        mainView.resetInteractions();
         mainView.setVisible(true);
     }
     
