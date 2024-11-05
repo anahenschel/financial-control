@@ -20,6 +20,11 @@ public class AddIncomeView extends javax.swing.JFrame {
         setExtendedState(MAXIMIZED_BOTH);
     }
     
+    /**
+     * Retorna uma instância da class AddIncomeView
+     *
+     * @return AddIncomeView
+     */
     public static AddIncomeView getAddIncomeView() {
         if (addIncomeView == null) {
             addIncomeView = new AddIncomeView();
@@ -28,10 +33,18 @@ public class AddIncomeView extends javax.swing.JFrame {
         return addIncomeView;
     }
     
+    /**
+     * Método de inicialização da janela
+     *
+     */
     public void screen() {
         
     }
     
+    /**
+     * Mostrar a tela principal MainView
+     *
+     */
     private void showMainView() {
         MainView mainView = MainView.getMainView();
         mainView.screen();

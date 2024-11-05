@@ -20,6 +20,11 @@ public class AddExpenseView extends javax.swing.JFrame {
         setExtendedState(MAXIMIZED_BOTH);
     }
     
+    /**
+     * Retorna uma instância da class AddExpenseView
+     *
+     * @return AddExpenseView
+     */
     public static AddExpenseView getAddExpenseView() {
         if (addExpenseView == null) {
             addExpenseView = new AddExpenseView();
@@ -28,10 +33,18 @@ public class AddExpenseView extends javax.swing.JFrame {
         return addExpenseView;
     }
     
+    /**
+     * Método de inicialização da janela
+     *
+     */
     public void screen() {
         
     }
     
+    /**
+     * Mostrar a tela principal MainView
+     *
+     */
     private void showMainView() {
         MainView mainView = MainView.getMainView();
         mainView.screen();
