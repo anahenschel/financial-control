@@ -124,7 +124,7 @@ public class MainView extends javax.swing.JFrame {
         jIncome.setBorder(javax.swing.BorderFactory.createTitledBorder("Receita"));
 
         jAddIncome.setText("Nova receita");
-        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jAddIncome.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddIncome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -157,7 +157,7 @@ public class MainView extends javax.swing.JFrame {
         jExpense.setBorder(javax.swing.BorderFactory.createTitledBorder("Despesa"));
 
         jAddExpense.setText("Nova despesa");
-        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jAddExpense.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddExpense.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

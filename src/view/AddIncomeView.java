@@ -38,7 +38,7 @@ public class AddIncomeView extends javax.swing.JFrame {
      *
      */
     public void screen() {
-        
+
     }
     
     /**
