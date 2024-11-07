@@ -4,17 +4,17 @@
  */
 package interfaces;
 
+import enums.LaunchType;
 import java.util.List;
 import model.Expense;
 import model.Income;
-import model.Launch;
 
 /**
  *
  * @author lhenschel
  */
 public interface PersistenceCSV {
-    public List<Launch> readFile();
-    public List<Income> listIncome();
-    public List<Expense> listExpense();
+    public void createFile();
+    public void saveRegister(Income income, Expense expense);
+    public List<Object> listRegisterByType(LaunchType type);
 }

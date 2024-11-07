@@ -4,6 +4,7 @@
  */
 package init;
 
+import model.PersistenceCSVImpl;
 import view.MainView;
 
 /**
@@ -26,6 +27,8 @@ public class App extends javax.swing.JFrame {
      */
     private void init() {
         showMainView();
+        
+        PersistenceCSVImpl.getPersistenceCSVImpl().createFile();
     }
 
     /**
