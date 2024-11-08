@@ -4,6 +4,8 @@
  */
 package model;
 
+import enums.ExpenseCategory;
+import enums.LaunchType;
 import java.time.LocalDateTime;
 
 /**
@@ -14,11 +16,10 @@ public class Expense extends Launch {
     private ExpenseCategory expenseCategory;
     
     public Expense() {
-        this(null, 0, null);
     }
 	
     public Expense(LocalDateTime dateTime, double amount, ExpenseCategory expenseCategory) {
-	super(dateTime, amount);
+	super(dateTime, amount, LaunchType.EXPENSE);
         this.expenseCategory = expenseCategory;
     }
 	
