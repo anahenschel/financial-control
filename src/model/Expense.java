@@ -4,6 +4,7 @@
  */
 package model;
 
+import enums.ExpenseCategory;
 import enums.LaunchType;
 import java.time.LocalDateTime;
 

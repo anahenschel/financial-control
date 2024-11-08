@@ -58,14 +58,14 @@ public class PersistenceCSVImpl implements PersistenceCSV {
             StringBuilder data = new StringBuilder();
             
             if (income != null) {
-                data.append(income.getType()).append(",");
-                data.append(income.getIncomeCategory()).append(",");
-                data.append(income.getDateTime().toString()).append(",");
+                data.append(income.getType()).append(";");
+                data.append(income.getIncomeCategory()).append(";");
+                data.append(income.getDateTime().toString()).append(";");
                 data.append(income.getAmount());
             } else if (expense != null) {
-                data.append(expense.getType()).append(",");
-                data.append(expense.getExpenseCategory()).append(",");
-                data.append(expense.getDateTime().toString()).append(",");
+                data.append(expense.getType()).append(";");
+                data.append(expense.getExpenseCategory()).append(";");
+                data.append(expense.getDateTime().toString()).append(";");
                 data.append(expense.getAmount());
             }
             
@@ -76,7 +76,7 @@ public class PersistenceCSVImpl implements PersistenceCSV {
     }
 
     @Override
-    public List<Object> listRegisterByType(LaunchType type) {
+    public List<Object> listRegisterByType(LaunchType type) throws IOException {
         List<Object> listRegister = new ArrayList<>();
         
         try (BufferedReader reader = new BufferedReader(new FileReader(launchFile))) {
@@ -100,7 +100,7 @@ public class PersistenceCSVImpl implements PersistenceCSV {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IOException("Erro ao listar os registro do arquivo");
         }
         
         return listRegister;

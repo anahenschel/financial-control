@@ -4,6 +4,16 @@
  */
 package view;
 
+import enums.IncomeCategory;
+import enums.LaunchType;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.FinancialControl;
+import model.Income;
+
 /**
  *
  * @author lucas
@@ -12,12 +22,16 @@ public class AddIncomeView extends javax.swing.JFrame {
 
     public static AddIncomeView addIncomeView;
     
+    private final FinancialControl financialControl = FinancialControl.getFinancialControl();
+    
     /**
      * Creates new form AddIncomeView
      */
     public AddIncomeView() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
+        
+        listIncomeCategory();
     }
     
     /**
@@ -38,7 +52,37 @@ public class AddIncomeView extends javax.swing.JFrame {
      *
      */
     public void screen() {
+        listIncome();
+    }
+    
+    private void listIncome() {
+        DefaultTableModel tableModel = new DefaultTableModel();
 
+        tableModel.addColumn("Valor");
+        tableModel.addColumn("Data");
+        tableModel.addColumn("Categoria");
+        
+        List<Income> listIncome = financialControl.listIncome();
+        
+        for (Income income : listIncome) {
+            Object[] row = {
+                income.getAmount(),
+                income.getDateTime(),
+                income.getIncomeCategory()
+            };
+            
+            tableModel.addRow(row);
+        }
+        
+        jIncomeTable.setModel(tableModel);
+        jIncomeTable.setVisible(false);
+        jIncomeTable.setVisible(true);
+    }
+    
+    private void listIncomeCategory() {
+        for (IncomeCategory incomeCategory : IncomeCategory.values()) {
+            jIncomeCategory.addItem(incomeCategory);
+        }
     }
     
     /**
@@ -51,6 +95,34 @@ public class AddIncomeView extends javax.swing.JFrame {
         mainView.setVisible(true);
         
         dispose();
+    }
+    
+    private boolean validInformations() {
+        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jIncomeCategory.getSelectedItem().equals("---");
+    }
+    
+    private void saveIncome() {
+        try {
+            if (validInformations()) {
+                Income income = new Income();
+
+                income.setAmount(Double.parseDouble(jAmount.getText().replace(",", ".")));
+                income.setIncomeCategory((IncomeCategory) jIncomeCategory.getSelectedItem());
+                income.setDateTime(LocalDateTime.parse(jDateTime.getText()));
+                income.setType(LaunchType.INCOME);
+
+                financialControl.createIncome(income);
+                resetInteractions();
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void resetInteractions() {
+        jDateTime.setText("");
+        jIncomeCategory.setSelectedIndex(0);
+        jAmount.setText("");
     }
 
     /**
@@ -111,11 +183,16 @@ public class AddIncomeView extends javax.swing.JFrame {
         jIncomeCategory.setPreferredSize(new java.awt.Dimension(300, 40));
 
         jSaveIncome.setText("Salvar Receita");
-        jSaveIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jSaveIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSaveIncome.setPreferredSize(new java.awt.Dimension(200, 40));
+        jSaveIncome.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jSaveIncomeMouseClicked(evt);
+            }
+        });
 
         jBackWindow.setText("Voltar");
-        jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jBackWindow.setPreferredSize(new java.awt.Dimension(200, 40));
         jBackWindow.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -237,6 +314,10 @@ public class AddIncomeView extends javax.swing.JFrame {
         showMainView();
     }//GEN-LAST:event_jBackWindowMouseClicked
 
+    private void jSaveIncomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSaveIncomeMouseClicked
+        saveIncome();
+    }//GEN-LAST:event_jSaveIncomeMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -279,7 +360,7 @@ public class AddIncomeView extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField jDateTime;
     private javax.swing.JLabel jDateTimeLabel;
     private javax.swing.JPanel jIncome;
-    private javax.swing.JComboBox<String> jIncomeCategory;
+    private javax.swing.JComboBox<IncomeCategory> jIncomeCategory;
     private javax.swing.JLabel jIncomeCategoryLabel;
     private javax.swing.JPanel jIncomeForm;
     private javax.swing.JTable jIncomeTable;

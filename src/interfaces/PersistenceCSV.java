@@ -17,5 +17,5 @@ import model.Income;
 public interface PersistenceCSV {
     public void createFile() throws IOException;
     public void saveRegister(Income income, Expense expense) throws IOException;
-    public List<Object> listRegisterByType(LaunchType type);
+    public List<Object> listRegisterByType(LaunchType type) throws IOException;
 }

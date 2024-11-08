@@ -4,6 +4,17 @@
  */
 package view;
 
+import enums.ExpenseCategory;
+import enums.LaunchType;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.Expense;
+import model.FinancialControl;
+import model.Income;
+
 /**
  *
  * @author lucas
@@ -12,12 +23,16 @@ public class AddExpenseView extends javax.swing.JFrame {
 
     public static AddExpenseView addExpenseView;
     
+    private final FinancialControl financialControl = FinancialControl.getFinancialControl();
+    
     /**
      * Creates new form AddIncomeView
      */
     public AddExpenseView() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
+        
+        listExpenseCategory();
     }
     
     /**
@@ -38,7 +53,37 @@ public class AddExpenseView extends javax.swing.JFrame {
      *
      */
     public void screen() {
+        listExpense();
+    }
+    
+    private void listExpense() {
+        DefaultTableModel tableModel = new DefaultTableModel();
+
+        tableModel.addColumn("Valor");
+        tableModel.addColumn("Data");
+        tableModel.addColumn("Categoria");
         
+        List<Expense> listExpense = financialControl.listExpense();
+        
+        for (Expense expense : listExpense) {
+            Object[] row = {
+                expense.getAmount(),
+                expense.getDateTime(),
+                expense.getExpenseCategory()
+            };
+            
+            tableModel.addRow(row);
+        }
+        
+        jExpenseTable.setModel(tableModel);
+        jExpenseTable.setVisible(false);
+        jExpenseTable.setVisible(true);
+    }
+    
+    private void listExpenseCategory() {
+        for (ExpenseCategory expenseCategory : ExpenseCategory.values()) {
+            jExpenseCategory.addItem(expenseCategory);
+        }
     }
     
     /**
@@ -52,7 +97,35 @@ public class AddExpenseView extends javax.swing.JFrame {
         
         dispose();
     }
+    
+    private boolean validInformations() {
+        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jExpenseCategory.getSelectedItem().equals("---");
+    }
 
+    private void saveExpense() {
+        try {
+            if (validInformations()) {
+                Expense expense = new Expense();
+
+                expense.setAmount(Double.parseDouble(jAmount.getText().replace(",", ".")));
+                expense.setExpenseCategory((ExpenseCategory) jExpenseCategory.getSelectedItem());
+                expense.setDateTime(LocalDateTime.parse(jDateTime.getText()));
+                expense.setType(LaunchType.EXPENSE);
+
+                financialControl.createExpense(expense);
+                resetInteractions();
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void resetInteractions() {
+        jDateTime.setText("");
+        jExpenseCategory.setSelectedIndex(0);
+        jAmount.setText("");
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -111,11 +184,16 @@ public class AddExpenseView extends javax.swing.JFrame {
         jExpenseCategory.setPreferredSize(new java.awt.Dimension(300, 40));
 
         jSaveExpense.setText("Salvar Despesa");
-        jSaveExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jSaveExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSaveExpense.setPreferredSize(new java.awt.Dimension(200, 40));
+        jSaveExpense.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jSaveExpenseMouseClicked(evt);
+            }
+        });
 
         jBackWindow.setText("Voltar");
-        jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jBackWindow.setPreferredSize(new java.awt.Dimension(200, 40));
         jBackWindow.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -237,6 +315,10 @@ public class AddExpenseView extends javax.swing.JFrame {
         showMainView();
     }//GEN-LAST:event_jBackWindowMouseClicked
 
+    private void jSaveExpenseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSaveExpenseMouseClicked
+        saveExpense();
+    }//GEN-LAST:event_jSaveExpenseMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -280,7 +362,7 @@ public class AddExpenseView extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField jDateTime;
     private javax.swing.JLabel jDateTimeLabel;
     private javax.swing.JPanel jExpense;
-    private javax.swing.JComboBox<String> jExpenseCategory;
+    private javax.swing.JComboBox<ExpenseCategory> jExpenseCategory;
     private javax.swing.JLabel jExpenseCategoryLabel;
     private javax.swing.JPanel jExpenseForm;
     private javax.swing.JTable jExpenseTable;
