@@ -5,6 +5,7 @@
 package interfaces;
 
 import enums.LaunchType;
+import java.io.IOException;
 import java.util.List;
 import model.Expense;
 import model.Income;
@@ -14,7 +15,7 @@ import model.Income;
  * @author lhenschel
  */
 public interface PersistenceCSV {
-    public void createFile();
-    public void saveRegister(Income income, Expense expense);
+    public void createFile() throws IOException;
+    public void saveRegister(Income income, Expense expense) throws IOException;
     public List<Object> listRegisterByType(LaunchType type);
 }

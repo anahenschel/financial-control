@@ -4,6 +4,7 @@
  */
 package model;
 
+import enums.LaunchType;
 import java.time.LocalDateTime;
 
 /**
@@ -13,14 +14,15 @@ import java.time.LocalDateTime;
 public abstract class Launch {
     private LocalDateTime dateTime;
     private double amount;
+    private LaunchType type;
     
     public Launch() {
-        this(null, 0);
     }
-    
-    public Launch(LocalDateTime dateTime, double amount) {
+
+    public Launch(LocalDateTime dateTime, double amount, LaunchType type) {
         this.dateTime = dateTime;
         this.amount = amount;
+        this.type = type;
     }
 	
     public LocalDateTime getDateTime() {
@@ -46,4 +48,16 @@ public abstract class Launch {
         
         this.amount = amount;
     }
+
+    public LaunchType getType() {
+        return type;
+    }
+
+    public void setType(LaunchType type) {
+        if (type == null || type == LaunchType.ALL) {
+            throw new IllegalArgumentException("Um lançamento precisa ter um tipo específico");
+        }
+        
+        this.type = type;
+    }    
 }

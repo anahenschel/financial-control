@@ -4,6 +4,7 @@
  */
 package model;
 
+import enums.LaunchType;
 import java.time.LocalDateTime;
 
 /**
@@ -14,11 +15,10 @@ public class Income extends Launch {
     private IncomeCategory incomeCategory;
 	
     public Income() {
-        this(null, 0, null);
     }
 	
     public Income(LocalDateTime dateTime, double amount, IncomeCategory incomeCategory) {
-	super(dateTime, amount);
+	super(dateTime, amount, LaunchType.INCOME);
 	this.incomeCategory = incomeCategory;
     }
 	

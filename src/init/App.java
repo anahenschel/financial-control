@@ -4,6 +4,10 @@
  */
 package init;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import model.PersistenceCSVImpl;
 import view.MainView;
 
@@ -26,9 +30,12 @@ public class App extends javax.swing.JFrame {
      *
      */
     private void init() {
-        showMainView();
-        
-        PersistenceCSVImpl.getPersistenceCSVImpl().createFile();
+        try {
+            PersistenceCSVImpl.getPersistenceCSVImpl().createFile();
+            showMainView();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
