@@ -5,9 +5,12 @@
 package view;
 
 import enums.IncomeCategory;
-import enums.LaunchType;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -19,8 +22,9 @@ import model.Income;
  * @author lucas
  */
 public class AddIncomeView extends javax.swing.JFrame {
-
     public static AddIncomeView addIncomeView;
+    
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
     /**
      * Creates new form AddIncomeView
@@ -96,22 +100,22 @@ public class AddIncomeView extends javax.swing.JFrame {
     }
     
     private boolean validInformations() {
-        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jIncomeCategory.getSelectedItem().equals(IncomeCategory.DEFAULT.toString());
+        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jIncomeCategory.getSelectedItem().equals(IncomeCategory.DEFAULT);
     }
     
     private void saveIncome() {
         try {
             if (validInformations()) {
-                Income income = new Income();
+                double amount = Double.parseDouble(jAmount.getText().replace(",", "."));
+                IncomeCategory incomeCategory = (IncomeCategory) jIncomeCategory.getSelectedItem();
+                
+                LocalDate date = LocalDate.parse(jDateTime.getText(), formatter);
+                LocalDateTime dateTime = date.atTime(LocalTime.now());
 
-                income.setAmount(Double.parseDouble(jAmount.getText().replace(",", ".")));
-                income.setIncomeCategory((IncomeCategory) jIncomeCategory.getSelectedItem());
-                income.setDateTime(LocalDateTime.parse(jDateTime.getText()));
-
-                FinancialControl.createIncome(income);
+                FinancialControl.createIncome(amount, incomeCategory, dateTime);
                 resetInteractions();
             }
-        } catch (IOException ex) {
+        } catch (IOException | IllegalArgumentException | DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }

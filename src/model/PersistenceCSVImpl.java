@@ -39,16 +39,14 @@ public class PersistenceCSVImpl implements PersistenceCSV {
     @Override
     public void createFile() throws IOException {
         launchFile = new File("launch.csv");
-        
-        if (!launchFile.exists()) {
-            try {
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(launchFile), "UTF-8"));
-                String[] headers = {"launchType", "category", "dateTime", "amount"};
 
-                writer.write(String.join(ADD_COLUMN, headers));
-                writer.newLine();    
+        if (!launchFile.exists()) {
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(launchFile), "UTF-8"))) {
+                String[] headers = {"launchType", "category", "dateTime", "amount"};
+                writer.write(String.join(";", headers));
+                writer.newLine();
             } catch (IOException ex) {
-                throw new IOException("Erro ao criar o arquivo");
+                throw new IOException("Erro ao criar o arquivo", ex);
             }
         }
     }
