@@ -76,13 +76,15 @@ public class ConverterUtils {
     }
     
     /**
-     * Verifica se a string fornecida representa um valor válido.
+     * Verifica se a string fornecida representa um valor válido entre 1 a 15 caracteres
+     * antes do separador decimal e entre 1 a 2 caracteres após o separador.
+     * A string está considerando como separador decimal o ponto (.) ou virgula (,).
      *
      * @param amountText A string representando o valor.
      * @return true se o valor for válido; caso contrário, false.
      */
     private static boolean isValidAmount(String amountText) {
-        return amountText != null && amountText.matches("\\d+(\\.\\d{1,2})?");
+        return amountText != null && amountText.matches("\\d{1,15}([.,]\\d{1,2})?");
     }
     
     /**
