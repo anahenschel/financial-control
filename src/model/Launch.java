@@ -24,13 +24,12 @@ public abstract class Launch {
      * @param amount O valor do lançamento.
      * @param type O tipo do lançamento, representado por um objeto LaunchType.
      *
-     * @throws IllegalArgumentException se dateTime for null, 
-     * se amount for menor ou igual a zero, ou se type for LaunchType.ALL.
+     * @throws IllegalArgumentException se type for LaunchType.ALL.
      */
     public Launch(LocalDateTime dateTime, double amount, LaunchType type) {
         this.dateTime = dateTime;
         this.amount = amount;
-        this.type = type;
+        setType(type);
     }
 	
     /**

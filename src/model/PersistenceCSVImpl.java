@@ -96,11 +96,9 @@ public class PersistenceCSVImpl implements PersistenceCSV {
                 
                 String[] columns = line.split(ADD_COLUMN);
                 
-                if (type == LaunchType.INCOME && columns[0].equals(LaunchType.INCOME)) {
+                if (type == LaunchType.ALL) {
                     listRegister.add(columns);
-                } else if (type == LaunchType.EXPENSE && columns[0].equals(LaunchType.EXPENSE)) {
-                    listRegister.add(columns);
-                } else if (type == LaunchType.ALL) {
+                } else if (columns[0].equals(type)) {
                     listRegister.add(columns);
                 }
             }

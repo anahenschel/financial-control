@@ -114,7 +114,6 @@ public class ConverterUtils {
      * @return Uma string representando a data no formato "dd/MM/yyyy".
      */
     public static String formatToDate(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return dateTime.format(formatter);
     }
 }
