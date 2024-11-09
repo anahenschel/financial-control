@@ -5,9 +5,12 @@
 package view;
 
 import enums.IncomeCategory;
-import enums.LaunchType;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -19,8 +22,9 @@ import model.Income;
  * @author lucas
  */
 public class AddIncomeView extends javax.swing.JFrame {
-
     public static AddIncomeView addIncomeView;
+    
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
     /**
      * Creates new form AddIncomeView
@@ -33,7 +37,7 @@ public class AddIncomeView extends javax.swing.JFrame {
     }
     
     /**
-     * Retorna uma instância da class AddIncomeView
+     * Retorna uma instância única da classe.
      *
      * @return AddIncomeView
      */
@@ -46,13 +50,17 @@ public class AddIncomeView extends javax.swing.JFrame {
     }
     
     /**
-     * Método de inicialização da janela
+     * Inicializa a janela, configurando os dados iniciais para exibição.
      *
      */
     public void screen() {
         listIncome();
     }
     
+    /**
+     * Preenche a tabela com a lista de receitas cadastradas.
+     *
+     */
     private void listIncome() {
         DefaultTableModel tableModel = new DefaultTableModel();
 
@@ -77,6 +85,10 @@ public class AddIncomeView extends javax.swing.JFrame {
         jIncomeTable.setVisible(true);
     }
     
+    /**
+     * Preenche o `JComboBox` com as categorias de receitas disponíveis.
+     *
+     */
     private void listIncomeCategory() {
         for (IncomeCategory incomeCategory : IncomeCategory.values()) {
             jIncomeCategory.addItem(incomeCategory);
@@ -84,7 +96,7 @@ public class AddIncomeView extends javax.swing.JFrame {
     }
     
     /**
-     * Mostrar a tela principal MainView
+     * Exibe a tela principal da aplicação e fecha a tela atual.
      *
      */
     private void showMainView() {
@@ -95,27 +107,43 @@ public class AddIncomeView extends javax.swing.JFrame {
         dispose();
     }
     
+    /**
+     * Valida os campos do formulário para garantir que todos os dados obrigatórios foram preenchidos.
+     *
+     * @return {@code true} se todos os campos obrigatórios do formulário estiverem preenchidos corretamente; 
+     *         {@code false} caso contrário.
+     */
     private boolean validInformations() {
-        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jIncomeCategory.getSelectedItem().equals(IncomeCategory.DEFAULT.toString());
+        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jIncomeCategory.getSelectedItem().equals(IncomeCategory.DEFAULT);
     }
     
+    /**
+     * Formata os dados de entrada e envia-os para a camada de controle para criar um registro de receita.
+     *
+     * @throws IOException
+     * @throws IllegalArgumentException
+     * @throws DateTimeParseException
+     */
     private void saveIncome() {
         try {
             if (validInformations()) {
-                Income income = new Income();
+                double amount = Double.parseDouble(jAmount.getText().replace(",", "."));
+                IncomeCategory incomeCategory = (IncomeCategory) jIncomeCategory.getSelectedItem();
+                
+                LocalDate date = LocalDate.parse(jDateTime.getText(), formatter);
+                LocalDateTime dateTime = date.atTime(LocalTime.now());
 
-                income.setAmount(Double.parseDouble(jAmount.getText().replace(",", ".")));
-                income.setIncomeCategory((IncomeCategory) jIncomeCategory.getSelectedItem());
-                income.setDateTime(LocalDateTime.parse(jDateTime.getText()));
-
-                FinancialControl.createIncome(income);
+                FinancialControl.createIncome(amount, incomeCategory, dateTime);
                 resetInteractions();
             }
-        } catch (IOException ex) {
+        } catch (IOException | IllegalArgumentException | DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
     
+    /**
+     * Limpa os campos do formulário de entrada, preparando-os para uma nova inserção de dados.
+     */
     private void resetInteractions() {
         jDateTime.setText("");
         jIncomeCategory.setSelectedIndex(0);
@@ -148,6 +176,7 @@ public class AddIncomeView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jIncomeTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jIncomeTitle.setText("Receitas");
 
         jIncomeTable.setModel(new javax.swing.table.DefaultTableModel(

@@ -5,23 +5,26 @@
 package view;
 
 import enums.ExpenseCategory;
-import enums.LaunchType;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Expense;
 import model.FinancialControl;
-import model.Income;
 
 /**
  *
  * @author lucas
  */
 public class AddExpenseView extends javax.swing.JFrame {
-
     public static AddExpenseView addExpenseView;
+    
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
     /**
      * Creates new form AddIncomeView
@@ -47,13 +50,17 @@ public class AddExpenseView extends javax.swing.JFrame {
     }
     
     /**
-     * Método de inicialização da janela
+     * Inicializa a janela, configurando os dados iniciais de despesas para exibição.
      *
      */
     public void screen() {
         listExpense();
     }
     
+    /**
+     * Preenche a tabela com a lista de despesas cadastradas.
+     *
+     */
     private void listExpense() {
         DefaultTableModel tableModel = new DefaultTableModel();
 
@@ -78,6 +85,10 @@ public class AddExpenseView extends javax.swing.JFrame {
         jExpenseTable.setVisible(true);
     }
     
+    /**
+     * Preenche o `JComboBox` com as categorias de despesas disponíveis.
+     *
+     */
     private void listExpenseCategory() {
         for (ExpenseCategory expenseCategory : ExpenseCategory.values()) {
             jExpenseCategory.addItem(expenseCategory);
@@ -85,7 +96,7 @@ public class AddExpenseView extends javax.swing.JFrame {
     }
     
     /**
-     * Mostrar a tela principal MainView
+     * Exibe a tela principal da aplicação e fecha a tela atual.
      *
      */
     private void showMainView() {
@@ -96,27 +107,41 @@ public class AddExpenseView extends javax.swing.JFrame {
         dispose();
     }
     
+    /**
+     * Valida as informações preenchidas no formulário.
+     *
+     * @return {@code true} se todas as informações do formulário forem válidas; 
+     *         {@code false} caso contrário.
+     */
     private boolean validInformations() {
-        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jExpenseCategory.getSelectedItem().equals(ExpenseCategory.DEFAULT.toString());
+        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jExpenseCategory.getSelectedItem().equals(ExpenseCategory.DEFAULT);
     }
 
+    /**
+     * Formata os dados do formulário e envia para a camada de controle para salvar uma despesa.
+     * 
+     */
     private void saveExpense() {
         try {
             if (validInformations()) {
-                Expense expense = new Expense();
+                double amount = Double.parseDouble(jAmount.getText().replace(",", "."));
+                ExpenseCategory expenseCategory = (ExpenseCategory) jExpenseCategory.getSelectedItem();
+                
+                LocalDate date = LocalDate.parse(jDateTime.getText(), formatter);
+                LocalDateTime dateTime = date.atTime(LocalTime.now());
 
-                expense.setAmount(Double.parseDouble(jAmount.getText().replace(",", ".")));
-                expense.setExpenseCategory((ExpenseCategory) jExpenseCategory.getSelectedItem());
-                expense.setDateTime(LocalDateTime.parse(jDateTime.getText()));
-
-                FinancialControl.createExpense(expense);
+                FinancialControl.createExpense(amount, expenseCategory, dateTime);
                 resetInteractions();
             }
-        } catch (IOException ex) {
+        } catch (IOException | IllegalArgumentException | DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
     
+    /**
+     * Limpa os campos do formulário de despesa.
+     * 
+     */
     private void resetInteractions() {
         jDateTime.setText("");
         jExpenseCategory.setSelectedIndex(0);
@@ -149,6 +174,7 @@ public class AddExpenseView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jExpenseTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jExpenseTitle.setText("Despesas");
 
         jExpenseTable.setModel(new javax.swing.table.DefaultTableModel(
