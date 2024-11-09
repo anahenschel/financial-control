@@ -50,13 +50,17 @@ public class AddExpenseView extends javax.swing.JFrame {
     }
     
     /**
-     * Método de inicialização da janela
+     * Inicializa a janela, configurando os dados iniciais de despesas para exibição.
      *
      */
     public void screen() {
         listExpense();
     }
     
+    /**
+     * Preenche a tabela com a lista de despesas cadastradas.
+     *
+     */
     private void listExpense() {
         DefaultTableModel tableModel = new DefaultTableModel();
 
@@ -81,6 +85,10 @@ public class AddExpenseView extends javax.swing.JFrame {
         jExpenseTable.setVisible(true);
     }
     
+    /**
+     * Preenche o `JComboBox` com as categorias de despesas disponíveis.
+     *
+     */
     private void listExpenseCategory() {
         for (ExpenseCategory expenseCategory : ExpenseCategory.values()) {
             jExpenseCategory.addItem(expenseCategory);
@@ -88,7 +96,7 @@ public class AddExpenseView extends javax.swing.JFrame {
     }
     
     /**
-     * Mostrar a tela principal MainView
+     * Exibe a tela principal da aplicação e fecha a tela atual.
      *
      */
     private void showMainView() {
@@ -99,10 +107,20 @@ public class AddExpenseView extends javax.swing.JFrame {
         dispose();
     }
     
+    /**
+     * Valida as informações preenchidas no formulário.
+     *
+     * @return {@code true} se todas as informações do formulário forem válidas; 
+     *         {@code false} caso contrário.
+     */
     private boolean validInformations() {
         return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jExpenseCategory.getSelectedItem().equals(ExpenseCategory.DEFAULT.toString());
     }
 
+    /**
+     * Formata os dados do formulário e envia para a camada de controle para salvar uma despesa.
+     * 
+     */
     private void saveExpense() {
         try {
             if (validInformations()) {
@@ -120,6 +138,10 @@ public class AddExpenseView extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Limpa os campos do formulário de despesa.
+     * 
+     */
     private void resetInteractions() {
         jDateTime.setText("");
         jExpenseCategory.setSelectedIndex(0);
@@ -152,6 +174,7 @@ public class AddExpenseView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jExpenseTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jExpenseTitle.setText("Despesas");
 
         jExpenseTable.setModel(new javax.swing.table.DefaultTableModel(

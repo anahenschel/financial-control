@@ -118,13 +118,14 @@ public class MainView extends javax.swing.JFrame {
         jDateLabel = new javax.swing.JLabel();
         jDate = new javax.swing.JFormattedTextField();
         jBalanceResult = new javax.swing.JLabel();
+        jTotalBalance = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jIncome.setBorder(javax.swing.BorderFactory.createTitledBorder("Receita"));
 
         jAddIncome.setText("Nova receita");
-        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jAddIncome.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddIncome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -157,7 +158,7 @@ public class MainView extends javax.swing.JFrame {
         jExpense.setBorder(javax.swing.BorderFactory.createTitledBorder("Despesa"));
 
         jAddExpense.setText("Nova despesa");
-        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jAddExpense.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddExpense.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -197,6 +198,7 @@ public class MainView extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jReleasesByDateTable);
 
+        jReleasesByDateTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jReleasesByDateTitle.setText("Lançamentos (ordenados por data)");
 
         jCheckBalance.setBorder(javax.swing.BorderFactory.createTitledBorder("Consultar Saldo"));
@@ -209,6 +211,7 @@ public class MainView extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
+        jBalanceResult.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBalanceResult.setText("Seu saldo é R$ 0000,00");
 
         javax.swing.GroupLayout jCheckBalanceLayout = new javax.swing.GroupLayout(jCheckBalance);
@@ -217,11 +220,11 @@ public class MainView extends javax.swing.JFrame {
             jCheckBalanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jCheckBalanceLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jCheckBalanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jCheckBalanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jDateLabel)
-                    .addComponent(jDate)
-                    .addComponent(jBalanceResult, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE))
-                .addGap(43, 43, 43))
+                    .addComponent(jBalanceResult, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jDate, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         jCheckBalanceLayout.setVerticalGroup(
             jCheckBalanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,43 +235,49 @@ public class MainView extends javax.swing.JFrame {
                 .addComponent(jDate, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jBalanceResult)
-                .addGap(15, 15, 15))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jTotalBalance.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTotalBalance.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jTotalBalance.setText("Saldo total é R$ 0000,00");
 
         javax.swing.GroupLayout jMainLayout = new javax.swing.GroupLayout(jMain);
         jMain.setLayout(jMainLayout);
         jMainLayout.setHorizontalGroup(
             jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jMainLayout.createSequentialGroup()
-                .addContainerGap(50, Short.MAX_VALUE)
+                .addContainerGap(66, Short.MAX_VALUE)
                 .addComponent(jIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(150, 150, 150)
+                .addGap(100, 100, 100)
                 .addComponent(jExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
                 .addComponent(jCheckBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
             .addGroup(jMainLayout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jMainLayout.createSequentialGroup()
                         .addComponent(jReleasesByDateTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jMainLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addGap(27, 27, 27))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTotalBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1))
+                .addGap(27, 27, 27))
         );
         jMainLayout.setVerticalGroup(
             jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jMainLayout.createSequentialGroup()
                 .addGap(45, 45, 45)
-                .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
-                .addComponent(jReleasesByDateTitle)
+                .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jExpense, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jCheckBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(44, 44, 44)
+                .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jReleasesByDateTitle)
+                    .addComponent(jTotalBalance))
                 .addGap(10, 10, 10)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
                 .addGap(45, 45, 45))
         );
 
@@ -346,5 +355,6 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JTable jReleasesByDateTable;
     private javax.swing.JLabel jReleasesByDateTitle;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jTotalBalance;
     // End of variables declaration//GEN-END:variables
 }
