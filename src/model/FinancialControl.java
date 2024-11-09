@@ -24,7 +24,6 @@ public class FinancialControl {
      * @param amount
      * @param incomeCategory
      * @param dateTime
-     * @param 
      * @throws IOException
      */
     public static void createIncome(double amount, IncomeCategory incomeCategory, LocalDateTime dateTime) throws IOException, IllegalArgumentException {
@@ -41,8 +40,7 @@ public class FinancialControl {
      * 
      * @param amount
      * @param expenseCategory
-     * @param dateTime
-     * @param 
+     * @param dateTime 
      * @throws IOException
      */
     public static void createExpense(double amount, ExpenseCategory expenseCategory, LocalDateTime dateTime) throws IOException, IllegalArgumentException {

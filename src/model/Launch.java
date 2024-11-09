@@ -40,7 +40,7 @@ public abstract class Launch {
 	
     public void setAmount(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("O valor não pode ser menor ou igual do que zero");
+            throw new IllegalArgumentException("O valor não pode ser menor ou igual a zero");
         }
         
         this.amount = amount;

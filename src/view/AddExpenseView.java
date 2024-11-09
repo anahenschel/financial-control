@@ -114,7 +114,7 @@ public class AddExpenseView extends javax.swing.JFrame {
      *         {@code false} caso contrário.
      */
     private boolean validInformations() {
-        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jExpenseCategory.getSelectedItem().equals(ExpenseCategory.DEFAULT.toString());
+        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jExpenseCategory.getSelectedItem().equals(ExpenseCategory.DEFAULT);
     }
 
     /**
