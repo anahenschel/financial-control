@@ -13,33 +13,41 @@ import java.util.List;
  * @author lucas
  */
 public class FinancialControl {
-    public static FinancialControl financialControl;
+    private static PersistenceCSVImpl persistenceCSVImpl = PersistenceCSVImpl.getPersistenceCSVImpl();
     
-    private PersistenceCSVImpl persistenceCSVImpl = PersistenceCSVImpl.getPersistenceCSVImpl();
-    
-    public static FinancialControl getFinancialControl() {
-        if (financialControl == null) {
-            financialControl = new FinancialControl();
-        }
-        
-        return financialControl;
-    }
-    
-    public void createIncome(Income income) throws IOException {
+    /**
+     * Cria as receitas com base nos parametros recebidos
+     * 
+     * @param 
+     * @throws IOException
+     */
+    public static void createIncome(Income income) throws IOException {
         persistenceCSVImpl.saveRegister(income, null);
     }
     
-    public void createExpense(Expense expense) throws IOException {
+    /**
+     * Cria as despesas com base nos parametros recebidos
+     * 
+     * @param 
+     * @throws IOException
+     */
+    public static void createExpense(Expense expense) throws IOException {
         persistenceCSVImpl.saveRegister(null, expense);
     }
     
-    public List<Income> listIncome() {
+    /**
+     * Lista todas as receitas armazenadas
+     */
+    public static List<Income> listIncome() {
         List<Income> listIncome = new ArrayList<>();
         
         return listIncome;
     }
     
-    public List<Expense> listExpense() {
+    /**
+     * Lista todas as despesas armazenadas
+     */
+    public static List<Expense> listExpense() {
         List<Expense> listExpense = new ArrayList<>();
         
         return listExpense;

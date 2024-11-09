@@ -16,6 +16,7 @@ public class Expense extends Launch {
     private ExpenseCategory expenseCategory;
     
     public Expense() {
+        super(null, 0, LaunchType.EXPENSE);
     }
 	
     public Expense(LocalDateTime dateTime, double amount, ExpenseCategory expenseCategory) {

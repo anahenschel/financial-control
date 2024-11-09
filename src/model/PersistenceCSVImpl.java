@@ -25,6 +25,7 @@ import java.util.List;
 public class PersistenceCSVImpl implements PersistenceCSV {
     public static PersistenceCSVImpl persistenceCSV;
     
+    private static final String ADD_COLUMN = ";";
     private File launchFile;
     
     public static PersistenceCSVImpl getPersistenceCSVImpl() {
@@ -44,7 +45,7 @@ public class PersistenceCSVImpl implements PersistenceCSV {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(launchFile), "UTF-8"));
                 String[] headers = {"launchType", "category", "dateTime", "amount"};
 
-                writer.write(String.join(";", headers));
+                writer.write(String.join(ADD_COLUMN, headers));
                 writer.newLine();    
             } catch (IOException ex) {
                 throw new IOException("Erro ao criar o arquivo");
@@ -58,14 +59,14 @@ public class PersistenceCSVImpl implements PersistenceCSV {
             StringBuilder data = new StringBuilder();
             
             if (income != null) {
-                data.append(income.getType()).append(";");
-                data.append(income.getIncomeCategory()).append(";");
-                data.append(income.getDateTime().toString()).append(";");
+                data.append(income.getType()).append(ADD_COLUMN);
+                data.append(income.getIncomeCategory()).append(ADD_COLUMN);
+                data.append(income.getDateTime().toString()).append(ADD_COLUMN);
                 data.append(income.getAmount());
             } else if (expense != null) {
-                data.append(expense.getType()).append(";");
-                data.append(expense.getExpenseCategory()).append(";");
-                data.append(expense.getDateTime().toString()).append(";");
+                data.append(expense.getType()).append(ADD_COLUMN);
+                data.append(expense.getExpenseCategory()).append(ADD_COLUMN);
+                data.append(expense.getDateTime().toString()).append(ADD_COLUMN);
                 data.append(expense.getAmount());
             }
             
@@ -89,7 +90,7 @@ public class PersistenceCSVImpl implements PersistenceCSV {
                     continue;
                 }
                 
-                String[] columns = line.split(",");
+                String[] columns = line.split(ADD_COLUMN);
                 
                 if (type == LaunchType.INCOME && columns[0].equals(LaunchType.INCOME)) {
                     listRegister.add(columns);
