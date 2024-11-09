@@ -6,10 +6,7 @@ package view;
 
 import enums.IncomeCategory;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -72,7 +69,7 @@ public class AddIncomeView extends javax.swing.JFrame {
         for (Income income : listIncome) {
             Object[] row = {
                 income.getAmount(),
-                income.getDateTime(),
+                ConverterUtils.formatToDate(income.getDateTime()),
                 income.getIncomeCategory()
             };
             

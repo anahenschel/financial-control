@@ -6,10 +6,7 @@ package view;
 
 import enums.ExpenseCategory;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -72,7 +69,7 @@ public class AddExpenseView extends javax.swing.JFrame {
         for (Expense expense : listExpense) {
             Object[] row = {
                 expense.getAmount(),
-                expense.getDateTime(),
+                ConverterUtils.formatToDate(expense.getDateTime()),
                 expense.getExpenseCategory()
             };
             
