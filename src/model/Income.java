@@ -16,6 +16,7 @@ public class Income extends Launch {
     private IncomeCategory incomeCategory;
 	
     public Income() {
+        super(null, 0, LaunchType.INCOME);
     }
 	
     public Income(LocalDateTime dateTime, double amount, IncomeCategory incomeCategory) {

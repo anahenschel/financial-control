@@ -16,9 +16,6 @@ public abstract class Launch {
     private double amount;
     private LaunchType type;
     
-    public Launch() {
-    }
-
     public Launch(LocalDateTime dateTime, double amount, LaunchType type) {
         this.dateTime = dateTime;
         this.amount = amount;

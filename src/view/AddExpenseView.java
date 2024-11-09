@@ -23,8 +23,6 @@ public class AddExpenseView extends javax.swing.JFrame {
 
     public static AddExpenseView addExpenseView;
     
-    private final FinancialControl financialControl = FinancialControl.getFinancialControl();
-    
     /**
      * Creates new form AddIncomeView
      */
@@ -63,7 +61,7 @@ public class AddExpenseView extends javax.swing.JFrame {
         tableModel.addColumn("Data");
         tableModel.addColumn("Categoria");
         
-        List<Expense> listExpense = financialControl.listExpense();
+        List<Expense> listExpense = FinancialControl.listExpense();
         
         for (Expense expense : listExpense) {
             Object[] row = {
@@ -99,7 +97,7 @@ public class AddExpenseView extends javax.swing.JFrame {
     }
     
     private boolean validInformations() {
-        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jExpenseCategory.getSelectedItem().equals("---");
+        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jExpenseCategory.getSelectedItem().equals(ExpenseCategory.DEFAULT.toString());
     }
 
     private void saveExpense() {
@@ -110,9 +108,8 @@ public class AddExpenseView extends javax.swing.JFrame {
                 expense.setAmount(Double.parseDouble(jAmount.getText().replace(",", ".")));
                 expense.setExpenseCategory((ExpenseCategory) jExpenseCategory.getSelectedItem());
                 expense.setDateTime(LocalDateTime.parse(jDateTime.getText()));
-                expense.setType(LaunchType.EXPENSE);
 
-                financialControl.createExpense(expense);
+                FinancialControl.createExpense(expense);
                 resetInteractions();
             }
         } catch (IOException ex) {

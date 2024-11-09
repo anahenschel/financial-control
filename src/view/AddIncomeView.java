@@ -22,8 +22,6 @@ public class AddIncomeView extends javax.swing.JFrame {
 
     public static AddIncomeView addIncomeView;
     
-    private final FinancialControl financialControl = FinancialControl.getFinancialControl();
-    
     /**
      * Creates new form AddIncomeView
      */
@@ -62,7 +60,7 @@ public class AddIncomeView extends javax.swing.JFrame {
         tableModel.addColumn("Data");
         tableModel.addColumn("Categoria");
         
-        List<Income> listIncome = financialControl.listIncome();
+        List<Income> listIncome = FinancialControl.listIncome();
         
         for (Income income : listIncome) {
             Object[] row = {
@@ -98,7 +96,7 @@ public class AddIncomeView extends javax.swing.JFrame {
     }
     
     private boolean validInformations() {
-        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jIncomeCategory.getSelectedItem().equals("---");
+        return !jDateTime.getText().equals("") && !jAmount.getText().equals("") && !jIncomeCategory.getSelectedItem().equals(IncomeCategory.DEFAULT.toString());
     }
     
     private void saveIncome() {
@@ -109,9 +107,8 @@ public class AddIncomeView extends javax.swing.JFrame {
                 income.setAmount(Double.parseDouble(jAmount.getText().replace(",", ".")));
                 income.setIncomeCategory((IncomeCategory) jIncomeCategory.getSelectedItem());
                 income.setDateTime(LocalDateTime.parse(jDateTime.getText()));
-                income.setType(LaunchType.INCOME);
 
-                financialControl.createIncome(income);
+                FinancialControl.createIncome(income);
                 resetInteractions();
             }
         } catch (IOException ex) {
