@@ -4,9 +4,16 @@
  */
 package view;
 
+import enums.LaunchType;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.FinancialControl;
+import model.Launch;
+import utils.ConverterUtils;
 
 /**
  *
@@ -43,6 +50,8 @@ public class MainView extends javax.swing.JFrame {
      */
     public void screen() {
         loadRelasesByDateTable();
+        loadTotalBalance();
+        loadCurrentBalance();
     }
     
     /**
@@ -66,9 +75,59 @@ public class MainView extends javax.swing.JFrame {
         tableModel.addColumn("Valor");
         tableModel.addColumn("Data");
         tableModel.addColumn("Tipo Lançamento");
-        tableModel.addColumn("Categoria");
+        
+        List<Launch> listLauchByFilter = FinancialControl.listReleasesByFilter(LocalDateTime.now());
+        int amountExpense = 0;
+        int amountIncome = 0;
+        
+        for (Launch launch : listLauchByFilter) {
+            Object[] row = {
+                launch.getAmount(),
+                ConverterUtils.formatToDate(launch.getDateTime()),
+                launch.getType()
+            };
+            
+            if (launch.getType().equals(LaunchType.EXPENSE)) {
+                amountExpense++;
+            } else if (launch.getType().equals(LaunchType.INCOME)) {
+                amountIncome++;
+            }
+            
+            tableModel.addRow(row);
+        }
+        
+        jIncomeTitle.setText("Total de receitas: " + amountIncome);
+        jExpenseTitle.setText("Total de despesas: " + amountExpense);
         
         jReleasesByDateTable.setModel(tableModel);
+        jReleasesByDateTable.setVisible(false);
+        jReleasesByDateTable.setVisible(true);
+    }
+
+    /**
+     * Carrega o saldo total e exibe na interface gráfica.
+     * 
+     */
+    private void loadTotalBalance() {
+        try {
+            double totalBalance = FinancialControl.checkTotalBalance();
+            jTotalBalance.setText("Saldo total é " + ConverterUtils.formatToCurrency(totalBalance));    
+        } catch (ArithmeticException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo total", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    /**
+     * Carrega o saldo atual e exibe na interface gráfica.
+     * 
+     */
+    private void loadCurrentBalance() {
+        try {
+            double currentBalance = FinancialControl.checkCurrentBalance(LocalDateTime.now());
+            jBalanceResult.setText("Seu saldo é " + ConverterUtils.formatToCurrency(currentBalance));    
+        } catch (ArithmeticException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo atual", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /**

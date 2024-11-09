@@ -15,19 +15,45 @@ import java.time.LocalDateTime;
 public class Income extends Launch {
     private IncomeCategory incomeCategory;
 	
+    /**
+     * Construtor padrão para a classe Income.
+     * Inicializa uma nova instância do Income com valores padrão.
+     *
+     */
     public Income() {
         super(null, 0, LaunchType.INCOME);
     }
 	
+    /**
+     * Construtor para a classe Income que inicializa uma nova instância 
+     * com a data, valor e categoria de receita especificados.
+     *
+     * @param dateTime A data e hora da receita, representada por um objeto LocalDateTime.
+     * @param amount O valor da receita.
+     * @param incomeCategory A categoria da receita, representada por um objeto IncomeCategory.
+     *
+     */
     public Income(LocalDateTime dateTime, double amount, IncomeCategory incomeCategory) {
 	super(dateTime, amount, LaunchType.INCOME);
 	this.incomeCategory = incomeCategory;
     }
 	
+    /**
+     * Retorna a categoria da receita associada a esta instância do Income.
+     *
+     * @return A categoria da receita, representada por um objeto IncomeCategory.
+     */
     public IncomeCategory getIncomeCategory() {
 	return incomeCategory;
     } 
 
+    /**
+     * Define a categoria da receita para esta instância do Income.
+     *
+     *
+     * @param incomeCategory A categoria da receita, representada por um objeto IncomeCategory.
+     * @throws IllegalArgumentException se incomeCategory for null ou igual a IncomeCategory.DEFAULT.
+     */
     public void setIncomeCategory(IncomeCategory incomeCategory) {
 	if (incomeCategory == null || incomeCategory == IncomeCategory.DEFAULT) {
             throw new IllegalArgumentException("Categoria deve ser informada");

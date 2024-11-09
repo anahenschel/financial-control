@@ -28,6 +28,12 @@ public class PersistenceCSVImpl implements PersistenceCSV {
     private static final String ADD_COLUMN = ";";
     private File launchFile;
     
+    /**
+     * Retorna uma instância única de PersistenceCSVImpl.
+     * 
+     *
+     * @return A instância única de PersistenceCSVImpl.
+     */
     public static PersistenceCSVImpl getPersistenceCSVImpl() {
         if (persistenceCSV == null) {
             persistenceCSV = new PersistenceCSVImpl();
