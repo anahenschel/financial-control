@@ -129,6 +129,7 @@ public class AddIncomeView extends javax.swing.JFrame {
             FinancialControl.createIncome(amount, incomeCategory, dateTime);
             JOptionPane.showMessageDialog(this, "Receita adicionada com sucesso");
 
+            listIncome();
             resetInteractions();
         } catch (IOException | IllegalArgumentException | DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -211,6 +212,11 @@ public class AddIncomeView extends javax.swing.JFrame {
                 jSaveIncomeMouseClicked(evt);
             }
         });
+        jSaveIncome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jSaveIncomeActionPerformed(evt);
+            }
+        });
 
         jBackWindow.setText("Voltar");
         jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -218,6 +224,11 @@ public class AddIncomeView extends javax.swing.JFrame {
         jBackWindow.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jBackWindowMouseClicked(evt);
+            }
+        });
+        jBackWindow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBackWindowActionPerformed(evt);
             }
         });
 
@@ -340,6 +351,14 @@ public class AddIncomeView extends javax.swing.JFrame {
         jSaveIncome.setSelected(false);
         saveIncome();
     }//GEN-LAST:event_jSaveIncomeMouseClicked
+
+    private void jBackWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBackWindowActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBackWindowActionPerformed
+
+    private void jSaveIncomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveIncomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSaveIncomeActionPerformed
 
     /**
      * @param args the command line arguments

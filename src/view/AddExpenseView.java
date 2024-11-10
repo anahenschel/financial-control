@@ -127,6 +127,7 @@ public class AddExpenseView extends javax.swing.JFrame {
             FinancialControl.createExpense(amount, expenseCategory, dateTime);
             JOptionPane.showMessageDialog(this, "Despesa adicionada com sucesso");
 
+            listExpense();
             resetInteractions();
         } catch (IOException | IllegalArgumentException | DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -205,6 +206,11 @@ public class AddExpenseView extends javax.swing.JFrame {
         jSaveExpense.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jSaveExpenseMouseClicked(evt);
+            }
+        });
+        jSaveExpense.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jSaveExpenseActionPerformed(evt);
             }
         });
 
@@ -338,6 +344,10 @@ public class AddExpenseView extends javax.swing.JFrame {
         jSaveExpense.setSelected(false);
         saveExpense();
     }//GEN-LAST:event_jSaveExpenseMouseClicked
+
+    private void jSaveExpenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveExpenseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSaveExpenseActionPerformed
 
     /**
      * @param args the command line arguments
