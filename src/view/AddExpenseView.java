@@ -51,6 +51,7 @@ public class AddExpenseView extends javax.swing.JFrame {
      */
     public void screen() {
         listExpense();
+        resetInteractions();
     }
     
     /**
@@ -58,6 +59,7 @@ public class AddExpenseView extends javax.swing.JFrame {
      *
      */
     private void listExpense() {
+        try{
         DefaultTableModel tableModel = new DefaultTableModel();
 
         tableModel.addColumn("Valor");
@@ -81,6 +83,9 @@ public class AddExpenseView extends javax.swing.JFrame {
         jExpenseTable.setModel(tableModel);
         jExpenseTable.setVisible(false);
         jExpenseTable.setVisible(true);
+        }catch(IOException ex){
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /**
@@ -153,11 +158,11 @@ public class AddExpenseView extends javax.swing.JFrame {
         jDateTime = new javax.swing.JFormattedTextField();
         jDateTimeLabel = new javax.swing.JLabel();
         jAmountLabel = new javax.swing.JLabel();
-        jAmount = new javax.swing.JTextField();
         jExpenseCategoryLabel = new javax.swing.JLabel();
         jExpenseCategory = new javax.swing.JComboBox<>();
         jSaveExpense = new javax.swing.JToggleButton();
         jBackWindow = new javax.swing.JToggleButton();
+        jAmount = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -187,8 +192,6 @@ public class AddExpenseView extends javax.swing.JFrame {
 
         jAmountLabel.setText("Valor");
 
-        jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
-
         jExpenseCategoryLabel.setText("Tipo de despesa");
 
         jExpenseCategory.setPreferredSize(new java.awt.Dimension(300, 40));
@@ -211,6 +214,8 @@ public class AddExpenseView extends javax.swing.JFrame {
             }
         });
 
+        jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
+
         javax.swing.GroupLayout jExpenseFormLayout = new javax.swing.GroupLayout(jExpenseForm);
         jExpenseForm.setLayout(jExpenseFormLayout);
         jExpenseFormLayout.setHorizontalGroup(
@@ -218,7 +223,6 @@ public class AddExpenseView extends javax.swing.JFrame {
             .addGroup(jExpenseFormLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jAmountLabel)
                     .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jExpenseFormLayout.createSequentialGroup()
@@ -232,7 +236,8 @@ public class AddExpenseView extends javax.swing.JFrame {
                             .addGap(80, 80, 80)
                             .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jExpenseCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jExpenseCategoryLabel)))))
+                                .addComponent(jExpenseCategoryLabel))))
+                    .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20))
         );
         jExpenseFormLayout.setVerticalGroup(
@@ -252,7 +257,7 @@ public class AddExpenseView extends javax.swing.JFrame {
                 .addComponent(jAmountLabel)
                 .addGap(5, 5, 5)
                 .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addGap(46, 46, 46)
                 .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSaveExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBackWindow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))

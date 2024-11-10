@@ -51,6 +51,7 @@ public class AddIncomeView extends javax.swing.JFrame {
      */
     public void screen() {
         listIncome();
+        resetInteractions();
     }
     
     /**
@@ -58,6 +59,7 @@ public class AddIncomeView extends javax.swing.JFrame {
      *
      */
     private void listIncome() {
+        try{
         DefaultTableModel tableModel = new DefaultTableModel();
 
         tableModel.addColumn("Valor");
@@ -81,6 +83,9 @@ public class AddIncomeView extends javax.swing.JFrame {
         jIncomeTable.setModel(tableModel);
         jIncomeTable.setVisible(false);
         jIncomeTable.setVisible(true);
+        }catch(IOException ex){
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /**

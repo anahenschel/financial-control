@@ -14,7 +14,9 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Expense;
 import model.FinancialControl;
+import model.Income;
 import model.Launch;
 import utils.ConverterUtils;
 
@@ -79,6 +81,7 @@ public class MainView extends javax.swing.JFrame {
             tableModel.addColumn("Valor");
             tableModel.addColumn("Data");
             tableModel.addColumn("Tipo Lançamento");
+            tableModel.addColumn("Categoria");
             
             jReleasesByDateTable.setRowHeight(35);
                         
@@ -87,17 +90,22 @@ public class MainView extends javax.swing.JFrame {
             int amountIncome = 0;
             
             for (Launch launch : listLauchByFilter) {
+                String category = "";
+                
+                if (launch.getType().equals(LaunchType.EXPENSE)) {
+                    category = ((Expense) launch).getExpenseCategory().toString();
+                    amountExpense++;
+                } else if (launch.getType().equals(LaunchType.INCOME)) {
+                    category = ((Income) launch).getIncomeCategory().toString();
+                    amountIncome++;
+                }
+                
                 Object[] row = {
                     ConverterUtils.formatToCurrency(launch.getAmount()),
                     ConverterUtils.formatToDate(launch.getDateTime()),
                     launch.getTypeToString(),
+                    category,
                 };
-                
-                if (launch.getType().equals(LaunchType.EXPENSE)) {
-                    amountExpense++;
-                } else if (launch.getType().equals(LaunchType.INCOME)) {
-                    amountIncome++;
-                }
                 
                 tableModel.addRow(row);
             }
@@ -303,10 +311,10 @@ public class MainView extends javax.swing.JFrame {
             jCheckBalanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jCheckBalanceLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jCheckBalanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jCheckBalanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jDateLabel)
-                    .addComponent(jBalanceResult, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDate, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jDate, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                    .addComponent(jBalanceResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
         jCheckBalanceLayout.setVerticalGroup(
@@ -343,7 +351,7 @@ public class MainView extends javax.swing.JFrame {
                     .addGroup(jMainLayout.createSequentialGroup()
                         .addComponent(jReleasesByDateTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTotalBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTotalBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1))
                 .addGap(27, 27, 27))
         );

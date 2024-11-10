@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import utils.ConverterUtils;
 
@@ -73,7 +71,7 @@ public class FinancialControl {
             for (Object register : listRegisters) {
                 if (register instanceof String[] columns) {
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
-                    double amount = ConverterUtils.convertToAmount(columns[3]);
+                    double amount = Double.parseDouble(columns[3]);
 
                     IncomeCategory incomeCategory = IncomeCategory.fromDescription(columns[1]);
                     Income income = new Income(localDateTime, amount, incomeCategory);
@@ -104,7 +102,7 @@ public class FinancialControl {
             for (Object register : listRegisters) {
                 if (register instanceof String[] columns) {
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
-                    double amount = ConverterUtils.convertToAmount(columns[3]);
+                    double amount = Double.parseDouble(columns[3]);
 
                     ExpenseCategory expenseCategory = ExpenseCategory.fromDescription(columns[1]);
                     Expense expense = new Expense(localDateTime, amount, expenseCategory);
@@ -137,7 +135,7 @@ public class FinancialControl {
                 if (register instanceof String[] columns) {
                     LaunchType launchType = LaunchType.valueOf(columns[0]);
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
-                    double amount = ConverterUtils.convertToAmount(columns[3]);
+                    double amount = Double.parseDouble(columns[3]);
                     
                     Launch launch;
                     if (launchType == LaunchType.INCOME) {
