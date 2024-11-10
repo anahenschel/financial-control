@@ -53,7 +53,7 @@
                       <Group type="102" attributes="0">
                           <Component id="jReleasesByDateTitle" min="-2" pref="360" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jTotalBalance" min="-2" pref="240" max="-2" attributes="0"/>
+                          <Component id="jTotalBalance" min="-2" pref="610" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane1" max="32767" attributes="0"/>
                   </Group>
@@ -234,10 +234,10 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jDateLabel" min="-2" max="-2" attributes="0"/>
-                          <Component id="jBalanceResult" alignment="0" min="-2" pref="263" max="-2" attributes="0"/>
-                          <Component id="jDate" alignment="0" min="-2" pref="280" max="-2" attributes="0"/>
+                          <Component id="jDate" alignment="0" pref="280" max="32767" attributes="0"/>
+                          <Component id="jBalanceResult" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace pref="26" max="32767" attributes="0"/>
                   </Group>
