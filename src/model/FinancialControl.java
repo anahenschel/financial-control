@@ -27,12 +27,12 @@ public class FinancialControl {
     /**
      * Cria as receitas com base nos parametros recebidos
      * 
-     * @param amount
-     * @param incomeCategory
-     * @param dateTime
-     * @throws IOException
+     * @param amount O valor da receita
+     * @param incomeCategory A categoria da receita
+     * @param dateTime A data e hora da receita
+     * @throws java.io.IOException
      */
-    public static void createIncome(double amount, IncomeCategory incomeCategory, LocalDateTime dateTime) throws IOException, IllegalArgumentException {
+    public static void createIncome(double amount, IncomeCategory incomeCategory, LocalDateTime dateTime) throws IOException {
         Income income = new Income();
         income.setDateTime(dateTime);
         income.setAmount(amount);
@@ -44,12 +44,12 @@ public class FinancialControl {
     /**
      * Cria as despesas com base nos parametros recebidos
      * 
-     * @param amount
-     * @param expenseCategory
-     * @param dateTime 
-     * @throws IOException
+     * @param amount O valor da despesa
+     * @param expenseCategory A categoria da despesa
+     * @param dateTime A data e hora da despesa
+     * @throws java.io.IOException
      */
-    public static void createExpense(double amount, ExpenseCategory expenseCategory, LocalDateTime dateTime) throws IOException, IllegalArgumentException { 
+    public static void createExpense(double amount, ExpenseCategory expenseCategory, LocalDateTime dateTime) throws IOException { 
         Expense expense = new Expense();
         expense.setDateTime(dateTime);
         expense.setAmount(amount);
@@ -62,10 +62,30 @@ public class FinancialControl {
      * Lista todas as receitas armazenadas.
      *
      * @return Uma lista de objetos Income representando todas as receitas.
+     * @throws java.io.IOException
      */
-    public static List<Income> listIncome() {
+    public static List<Income> listIncome() throws IOException {
         List<Income> listIncome = new ArrayList<>();
-        
+
+        try {
+            List<Object> listRegisters = persistenceCSVImpl.listRegisterByType(LaunchType.INCOME);
+
+            for (Object register : listRegisters) {
+                if (register instanceof String[] columns) {
+                    LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
+                    double amount = ConverterUtils.convertToAmount(columns[3]);
+
+                    IncomeCategory incomeCategory = IncomeCategory.fromDescription(columns[1]);
+                    Income income = new Income(localDateTime, amount, incomeCategory);
+
+                    listIncome.add(income);
+                }
+            }
+
+            listIncome.sort(Comparator.comparing(Launch::getDateTime).reversed());
+        } catch (IOException ex) {
+            throw new IOException("Erro ao listar os registros!");
+        }
         return listIncome;
     }
     
@@ -73,9 +93,30 @@ public class FinancialControl {
      * Lista todas as despesas armazenadas.
      *
      * @return Uma lista de objetos Expense representando todas as despesas.
+     * @throws java.io.IOException
      */
-    public static List<Expense> listExpense() {
+    public static List<Expense> listExpense() throws IOException{
         List<Expense> listExpense = new ArrayList<>();
+        
+        try {
+            List<Object> listRegisters = persistenceCSVImpl.listRegisterByType(LaunchType.INCOME);
+
+            for (Object register : listRegisters) {
+                if (register instanceof String[] columns) {
+                    LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
+                    double amount = ConverterUtils.convertToAmount(columns[3]);
+
+                    ExpenseCategory expenseCategory = ExpenseCategory.fromDescription(columns[1]);
+                    Expense expense = new Expense(localDateTime, amount, expenseCategory);
+
+                    listExpense.add(expense);
+                }
+            }
+
+            listExpense.sort(Comparator.comparing(Launch::getDateTime).reversed());
+        } catch (IOException ex) {
+            throw new IOException("Erro ao listar os registros!");
+        }
         
         return listExpense;
     }
@@ -96,7 +137,7 @@ public class FinancialControl {
                 if (register instanceof String[] columns) {
                     LaunchType launchType = LaunchType.valueOf(columns[0]);
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
-                    double amount = Double.parseDouble(columns[3]);
+                    double amount = ConverterUtils.convertToAmount(columns[3]);
                     
                     Launch launch;
                     if (launchType == LaunchType.INCOME) {
