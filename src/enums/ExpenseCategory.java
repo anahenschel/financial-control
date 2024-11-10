@@ -21,7 +21,7 @@ public enum ExpenseCategory {
     INSURANCE("Seguro"),
     SERVICES("Serviços"),
     DEBT_LOANS("Empréstimos e Dívidas"),
-    OTHER_EXPENSES("Outras Despesas");
+    OTHER_EXPENSE("Outras Despesas");
 
     private final String description;
 

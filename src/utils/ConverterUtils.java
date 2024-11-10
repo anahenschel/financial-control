@@ -30,12 +30,23 @@ public class ConverterUtils {
      * @return O valor convertido para o tipo double.
      * @throws IllegalArgumentException se amount for inválido.
      */
-    public static double convertToAmount(String amount) throws IllegalArgumentException {
-        if (isValidAmount(amount)) {
-            return Double.parseDouble(amount.replace(",", "."));
+    public static double convertToAmount(String amount) throws IllegalArgumentException, NumberFormatException {
+        double convertedAmount = 0;
+        try {
+            convertedAmount = Double.parseDouble(amount.replace(",", "."));
+            
+            if (convertedAmount <= 0) {
+                throw new IllegalArgumentException("Por favor, informe um valor maior do que zero.");
+            }
+            
+            if (!isValidAmount(amount)) {
+                throw new IllegalArgumentException("Por favor, informe um valor com até 15 caracteres antes do separador decimal e no máximo 2 caracteres após o separador");
+            }
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Por favor, informe um valor numérico válido.");
         }
         
-        throw new IllegalArgumentException("Por favor, informe um valor válido");
+        return convertedAmount;
     }
     
     /**
@@ -51,12 +62,12 @@ public class ConverterUtils {
         try {
             LocalDate localDate = LocalDate.parse(date, formatter);
             localDateTime = localDate.atTime(LocalTime.now());
-            
+
             if (!isValidDateTime(localDateTime)) {
-                throw new IllegalArgumentException("Por favor, informe uma data válida");
+                throw new IllegalArgumentException("A data mínima aceita é 01/01/1900. Por favor, insira uma data válida.");
             }
-        } catch (IllegalArgumentException | DateTimeParseException e) {
-            throw new IllegalArgumentException("Por favor, informe uma data válida");
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Por favor, informe uma data válida.");
         }
         
         return localDateTime;
@@ -73,7 +84,7 @@ public class ConverterUtils {
         try {
             return LocalDateTime.parse(date);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Por favor, informe uma data válida no formato ISO 8601 (ex: 2024-01-22T09:52:52.598782400)", e);
+            throw new DateTimeParseException("Por favor, informe uma data válida no formato ISO 8601 (ex: 2024-01-22T09:52:52.598782400)", date, 0);
         }
     }
     
@@ -88,28 +99,6 @@ public class ConverterUtils {
         if ((incCat == null || incCat == IncomeCategory.DEFAULT) && (expCat == null || expCat == ExpenseCategory.DEFAULT)) {
             throw new IllegalArgumentException("Por favor, selecione o tipo da transação");
         }
-    }
-    
-    /**
-     * Verifica se a string fornecida representa um valor válido entre 1 a 15 caracteres
-     * antes do separador decimal e entre 1 a 2 caracteres após o separador.
-     * A string está considerando como separador decimal o ponto (.) ou virgula (,).
-     *
-     * @param amountText A string representando o valor.
-     * @return true se o valor for válido; caso contrário, false.
-     */
-    private static boolean isValidAmount(String amountText) {
-        return amountText != null && amountText.matches("\\d{1,15}([.,]\\d{1,2})?");
-    }
-    
-    /**
-     * Verifica se a data e hora fornecida é válida.
-     *
-     * @param dateTime A data e hora a ser verificada.
-     * @return true se a data e hora for válida; caso contrário, false.
-     */
-    private static boolean isValidDateTime(LocalDateTime dateTime) {
-        return dateTime != null && !dateTime.isBefore(MIN_DATE);
     }
     
     /**
@@ -132,5 +121,27 @@ public class ConverterUtils {
      */
     public static String formatToDate(LocalDateTime dateTime) {
         return dateTime.format(formatter);
+    }
+    
+    /**
+     * Verifica se a string fornecida representa um valor válido entre 1 a 15 caracteres
+     * antes do separador decimal e entre 1 a 2 caracteres após o separador.
+     * A string está considerando como separador decimal o ponto (.) ou virgula (,).
+     *
+     * @param amountText A string representando o valor.
+     * @return true se o valor for válido; caso contrário, false.
+     */
+    private static boolean isValidAmount(String amountText) {
+        return amountText != null && amountText.matches("\\d{1,15}([.,]\\d{1,2})?");
+    }
+    
+    /**
+     * Verifica se a data e hora fornecida é válida.
+     *
+     * @param dateTime A data e hora a ser verificada.
+     * @return true se a data e hora for válida; caso contrário, false.
+     */
+    private static boolean isValidDateTime(LocalDateTime dateTime) {
+        return dateTime != null && !dateTime.isBefore(MIN_DATE);
     }
 }
