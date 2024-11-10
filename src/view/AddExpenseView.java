@@ -4,6 +4,17 @@
  */
 package view;
 
+import enums.ExpenseCategory;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.Expense;
+import model.FinancialControl;
+import utils.ConverterUtils;
+
 /**
  *
  * @author lucas
@@ -11,15 +22,17 @@ package view;
 public class AddExpenseView extends javax.swing.JFrame {
 
     public static AddExpenseView addExpenseView;
-    
+
     /**
      * Creates new form AddIncomeView
      */
     public AddExpenseView() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
+
+        listExpenseCategory();
     }
-    
+
     /**
      * Retorna uma instância da class AddExpenseView
      *
@@ -29,28 +42,106 @@ public class AddExpenseView extends javax.swing.JFrame {
         if (addExpenseView == null) {
             addExpenseView = new AddExpenseView();
         }
-        
+
         return addExpenseView;
     }
-    
+
     /**
-     * Método de inicialização da janela
+     * Inicializa a janela, configurando os dados iniciais de despesas para
+     * exibição.
      *
      */
     public void screen() {
-        
+        listExpense();
+        resetInteractions();
     }
-    
+
     /**
-     * Mostrar a tela principal MainView
+     * Preenche a tabela com a lista de despesas cadastradas.
+     *
+     */
+    private void listExpense() {
+        try {
+            DefaultTableModel tableModel = new DefaultTableModel();
+
+            tableModel.addColumn("Valor");
+            tableModel.addColumn("Data");
+            tableModel.addColumn("Categoria");
+
+            jExpenseTable.setRowHeight(35);
+
+            List<Expense> listExpense = FinancialControl.listExpense();
+
+            for (Expense expense : listExpense) {
+                Object[] row = {
+                    ConverterUtils.formatToCurrency(expense.getAmount()),
+                    ConverterUtils.formatToDate(expense.getDateTime()),
+                    expense.getExpenseCategory()
+                };
+
+                tableModel.addRow(row);
+            }
+
+            jExpenseTable.setModel(tableModel);
+            jExpenseTable.setVisible(false);
+            jExpenseTable.setVisible(true);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Preenche o `JComboBox` com as categorias de despesas disponíveis.
+     *
+     */
+    private void listExpenseCategory() {
+        for (ExpenseCategory expenseCategory : ExpenseCategory.values()) {
+            jExpenseCategory.addItem(expenseCategory);
+        }
+    }
+
+    /**
+     * Exibe a tela principal da aplicação e fecha a tela atual.
      *
      */
     private void showMainView() {
         MainView mainView = MainView.getMainView();
         mainView.screen();
         mainView.setVisible(true);
-        
+
         dispose();
+    }
+
+    /**
+     * Formata os dados do formulário e envia para a camada de controle para
+     * salvar uma despesa.
+     *
+     */
+    private void saveExpense() {
+        try {
+            LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDateTime.getText());
+            ExpenseCategory expenseCategory = (ExpenseCategory) jExpenseCategory.getSelectedItem();
+            ConverterUtils.validCategory(null, expenseCategory);
+            double amount = ConverterUtils.convertToAmount(jAmount.getText());
+
+            FinancialControl.createExpense(amount, expenseCategory, dateTime);
+            JOptionPane.showMessageDialog(this, "Despesa adicionada com sucesso");
+
+            listExpense();
+            resetInteractions();
+        } catch (IOException | IllegalArgumentException | DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Limpa os campos do formulário de despesa.
+     *
+     */
+    private void resetInteractions() {
+        jDateTime.setText("");
+        jExpenseCategory.setSelectedIndex(0);
+        jAmount.setText("");
     }
 
     /**
@@ -71,14 +162,15 @@ public class AddExpenseView extends javax.swing.JFrame {
         jDateTime = new javax.swing.JFormattedTextField();
         jDateTimeLabel = new javax.swing.JLabel();
         jAmountLabel = new javax.swing.JLabel();
-        jAmount = new javax.swing.JTextField();
         jExpenseCategoryLabel = new javax.swing.JLabel();
         jExpenseCategory = new javax.swing.JComboBox<>();
         jSaveExpense = new javax.swing.JToggleButton();
         jBackWindow = new javax.swing.JToggleButton();
+        jAmount = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jExpenseTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jExpenseTitle.setText("Despesas");
 
         jExpenseTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -104,8 +196,6 @@ public class AddExpenseView extends javax.swing.JFrame {
 
         jAmountLabel.setText("Valor");
 
-        jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
-
         jExpenseCategoryLabel.setText("Tipo de despesa");
 
         jExpenseCategory.setPreferredSize(new java.awt.Dimension(300, 40));
@@ -113,6 +203,16 @@ public class AddExpenseView extends javax.swing.JFrame {
         jSaveExpense.setText("Salvar Despesa");
         jSaveExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jSaveExpense.setPreferredSize(new java.awt.Dimension(200, 40));
+        jSaveExpense.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jSaveExpenseMouseClicked(evt);
+            }
+        });
+        jSaveExpense.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jSaveExpenseActionPerformed(evt);
+            }
+        });
 
         jBackWindow.setText("Voltar");
         jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -123,6 +223,8 @@ public class AddExpenseView extends javax.swing.JFrame {
             }
         });
 
+        jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
+
         javax.swing.GroupLayout jExpenseFormLayout = new javax.swing.GroupLayout(jExpenseForm);
         jExpenseForm.setLayout(jExpenseFormLayout);
         jExpenseFormLayout.setHorizontalGroup(
@@ -130,7 +232,6 @@ public class AddExpenseView extends javax.swing.JFrame {
             .addGroup(jExpenseFormLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jAmountLabel)
                     .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jExpenseFormLayout.createSequentialGroup()
@@ -144,7 +245,8 @@ public class AddExpenseView extends javax.swing.JFrame {
                             .addGap(80, 80, 80)
                             .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jExpenseCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jExpenseCategoryLabel)))))
+                                .addComponent(jExpenseCategoryLabel))))
+                    .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20))
         );
         jExpenseFormLayout.setVerticalGroup(
@@ -164,7 +266,7 @@ public class AddExpenseView extends javax.swing.JFrame {
                 .addComponent(jAmountLabel)
                 .addGap(5, 5, 5)
                 .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addGap(46, 46, 46)
                 .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSaveExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBackWindow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -234,8 +336,18 @@ public class AddExpenseView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBackWindowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBackWindowMouseClicked
+        jBackWindow.setSelected(false);
         showMainView();
     }//GEN-LAST:event_jBackWindowMouseClicked
+
+    private void jSaveExpenseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSaveExpenseMouseClicked
+        jSaveExpense.setSelected(false);
+        saveExpense();
+    }//GEN-LAST:event_jSaveExpenseMouseClicked
+
+    private void jSaveExpenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveExpenseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSaveExpenseActionPerformed
 
     /**
      * @param args the command line arguments
@@ -280,7 +392,7 @@ public class AddExpenseView extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField jDateTime;
     private javax.swing.JLabel jDateTimeLabel;
     private javax.swing.JPanel jExpense;
-    private javax.swing.JComboBox<String> jExpenseCategory;
+    private javax.swing.JComboBox<ExpenseCategory> jExpenseCategory;
     private javax.swing.JLabel jExpenseCategoryLabel;
     private javax.swing.JPanel jExpenseForm;
     private javax.swing.JTable jExpenseTable;

@@ -4,9 +4,21 @@
  */
 package view;
 
+import enums.LaunchType;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Expense;
+import model.FinancialControl;
+import model.Income;
+import model.Launch;
+import utils.ConverterUtils;
 
 /**
  *
@@ -43,6 +55,8 @@ public class MainView extends javax.swing.JFrame {
      */
     public void screen() {
         loadRelasesByDateTable();
+        loadTotalBalance();
+        loadCurrentBalance(LocalDateTime.now());
     }
     
     /**
@@ -61,14 +75,76 @@ public class MainView extends javax.swing.JFrame {
      *
      */
     private void loadRelasesByDateTable() {
-        DefaultTableModel tableModel = new DefaultTableModel();
+        try {
+            DefaultTableModel tableModel = new DefaultTableModel();
+            
+            tableModel.addColumn("Valor");
+            tableModel.addColumn("Data");
+            tableModel.addColumn("Tipo Lançamento");
+            tableModel.addColumn("Categoria");
+            
+            jReleasesByDateTable.setRowHeight(35);
+                        
+            List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
+            int amountExpense = 0;
+            int amountIncome = 0;
+            
+            for (Launch launch : listLauchByFilter) {
+                String category = "";
+                
+                if (launch.getType().equals(LaunchType.EXPENSE)) {
+                    category = ((Expense) launch).getExpenseCategory().toString();
+                    amountExpense++;
+                } else if (launch.getType().equals(LaunchType.INCOME)) {
+                    category = ((Income) launch).getIncomeCategory().toString();
+                    amountIncome++;
+                }
+                
+                Object[] row = {
+                    ConverterUtils.formatToCurrency(launch.getAmount()),
+                    ConverterUtils.formatToDate(launch.getDateTime()),
+                    launch.getTypeToString(),
+                    category,
+                };
+                
+                tableModel.addRow(row);
+            }
+            
+            jIncomeTitle.setText("Total de receitas: " + amountIncome);
+            jExpenseTitle.setText("Total de despesas: " + amountExpense);
+            
+            jReleasesByDateTable.setModel(tableModel);
+            jReleasesByDateTable.setVisible(false);
+            jReleasesByDateTable.setVisible(true);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-        tableModel.addColumn("Valor");
-        tableModel.addColumn("Data");
-        tableModel.addColumn("Tipo Lançamento");
-        tableModel.addColumn("Categoria");
-        
-        jReleasesByDateTable.setModel(tableModel);
+    /**
+     * Carrega o saldo total e exibe na interface gráfica.
+     * 
+     */
+    private void loadTotalBalance() {
+        try {
+            double totalBalance = FinancialControl.checkTotalBalance();
+            jTotalBalance.setText("Saldo total é " + ConverterUtils.formatToCurrency(totalBalance));    
+        } catch (ArithmeticException | IOException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo total", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    /**
+     * Carrega o saldo atual e exibe na interface gráfica.
+     * 
+     */
+    private void loadCurrentBalance(LocalDateTime dateTime) {
+        try {
+            double currentBalance = FinancialControl.checkCurrentBalance(dateTime);
+            jBalanceResult.setText("Seu saldo é " + ConverterUtils.formatToCurrency(currentBalance));    
+        } catch (ArithmeticException | IOException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo atual", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /**
@@ -95,6 +171,15 @@ public class MainView extends javax.swing.JFrame {
         dispose();
     }
     
+    private void isValidDate() {
+        try {
+            LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDate.getText());
+            loadCurrentBalance(dateTime);
+        } catch (DateTimeParseException | IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -118,13 +203,14 @@ public class MainView extends javax.swing.JFrame {
         jDateLabel = new javax.swing.JLabel();
         jDate = new javax.swing.JFormattedTextField();
         jBalanceResult = new javax.swing.JLabel();
+        jTotalBalance = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jIncome.setBorder(javax.swing.BorderFactory.createTitledBorder("Receita"));
 
         jAddIncome.setText("Nova receita");
-        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jAddIncome.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddIncome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -157,7 +243,7 @@ public class MainView extends javax.swing.JFrame {
         jExpense.setBorder(javax.swing.BorderFactory.createTitledBorder("Despesa"));
 
         jAddExpense.setText("Nova despesa");
-        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jAddExpense.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddExpense.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -187,6 +273,7 @@ public class MainView extends javax.swing.JFrame {
                 .addGap(26, 26, 26))
         );
 
+        jReleasesByDateTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jReleasesByDateTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -197,9 +284,10 @@ public class MainView extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jReleasesByDateTable);
 
+        jReleasesByDateTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jReleasesByDateTitle.setText("Lançamentos (ordenados por data)");
 
-        jCheckBalance.setBorder(javax.swing.BorderFactory.createTitledBorder("Consultar Saldo"));
+        jCheckBalance.setBorder(javax.swing.BorderFactory.createTitledBorder("Consultar Saldo - Pressione 'Enter' para atualizar o saldo"));
 
         jDateLabel.setText("Data");
 
@@ -208,7 +296,13 @@ public class MainView extends javax.swing.JFrame {
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        jDate.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jDateKeyPressed(evt);
+            }
+        });
 
+        jBalanceResult.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBalanceResult.setText("Seu saldo é R$ 0000,00");
 
         javax.swing.GroupLayout jCheckBalanceLayout = new javax.swing.GroupLayout(jCheckBalance);
@@ -219,9 +313,9 @@ public class MainView extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jCheckBalanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jDateLabel)
-                    .addComponent(jDate)
-                    .addComponent(jBalanceResult, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE))
-                .addGap(43, 43, 43))
+                    .addComponent(jDate, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                    .addComponent(jBalanceResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         jCheckBalanceLayout.setVerticalGroup(
             jCheckBalanceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,43 +326,49 @@ public class MainView extends javax.swing.JFrame {
                 .addComponent(jDate, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jBalanceResult)
-                .addGap(15, 15, 15))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jTotalBalance.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTotalBalance.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jTotalBalance.setText("Saldo total é R$ 0000,00");
 
         javax.swing.GroupLayout jMainLayout = new javax.swing.GroupLayout(jMain);
         jMain.setLayout(jMainLayout);
         jMainLayout.setHorizontalGroup(
             jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jMainLayout.createSequentialGroup()
-                .addContainerGap(50, Short.MAX_VALUE)
+                .addContainerGap(66, Short.MAX_VALUE)
                 .addComponent(jIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(150, 150, 150)
+                .addGap(100, 100, 100)
                 .addComponent(jExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
                 .addComponent(jCheckBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
             .addGroup(jMainLayout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jMainLayout.createSequentialGroup()
                         .addComponent(jReleasesByDateTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jMainLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addGap(27, 27, 27))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTotalBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1))
+                .addGap(27, 27, 27))
         );
         jMainLayout.setVerticalGroup(
             jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jMainLayout.createSequentialGroup()
                 .addGap(45, 45, 45)
-                .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
-                .addComponent(jReleasesByDateTitle)
+                .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jExpense, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jCheckBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(44, 44, 44)
+                .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jReleasesByDateTitle)
+                    .addComponent(jTotalBalance))
                 .addGap(10, 10, 10)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
                 .addGap(45, 45, 45))
         );
 
@@ -288,12 +388,20 @@ public class MainView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jAddIncomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAddIncomeMouseClicked
+        jAddIncome.setSelected(false);
         showAddIncomeView();
     }//GEN-LAST:event_jAddIncomeMouseClicked
 
     private void jAddExpenseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAddExpenseMouseClicked
+        jAddExpense.setSelected(false);
         showAddExpenseView();
     }//GEN-LAST:event_jAddExpenseMouseClicked
+
+    private void jDateKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jDateKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            isValidDate();
+        }
+    }//GEN-LAST:event_jDateKeyPressed
 
     /**
      * @param args the command line arguments
@@ -346,5 +454,6 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JTable jReleasesByDateTable;
     private javax.swing.JLabel jReleasesByDateTitle;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jTotalBalance;
     // End of variables declaration//GEN-END:variables
 }
