@@ -5,8 +5,11 @@
 package view;
 
 import enums.LaunchType;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -51,7 +54,7 @@ public class MainView extends javax.swing.JFrame {
     public void screen() {
         loadRelasesByDateTable();
         loadTotalBalance();
-        loadCurrentBalance();
+        loadCurrentBalance(LocalDateTime.now());
     }
     
     /**
@@ -70,38 +73,44 @@ public class MainView extends javax.swing.JFrame {
      *
      */
     private void loadRelasesByDateTable() {
-        DefaultTableModel tableModel = new DefaultTableModel();
-
-        tableModel.addColumn("Valor");
-        tableModel.addColumn("Data");
-        tableModel.addColumn("Tipo Lançamento");
-        
-        List<Launch> listLauchByFilter = FinancialControl.listReleasesByFilter(LocalDateTime.now());
-        int amountExpense = 0;
-        int amountIncome = 0;
-        
-        for (Launch launch : listLauchByFilter) {
-            Object[] row = {
-                launch.getAmount(),
-                ConverterUtils.formatToDate(launch.getDateTime()),
-                launch.getType()
-            };
+        try {
+            DefaultTableModel tableModel = new DefaultTableModel();
             
-            if (launch.getType().equals(LaunchType.EXPENSE)) {
-                amountExpense++;
-            } else if (launch.getType().equals(LaunchType.INCOME)) {
-                amountIncome++;
+            tableModel.addColumn("Valor");
+            tableModel.addColumn("Data");
+            tableModel.addColumn("Tipo Lançamento");
+            
+            jReleasesByDateTable.setRowHeight(35);
+                        
+            List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
+            int amountExpense = 0;
+            int amountIncome = 0;
+            
+            for (Launch launch : listLauchByFilter) {
+                Object[] row = {
+                    ConverterUtils.formatToCurrency(launch.getAmount()),
+                    ConverterUtils.formatToDate(launch.getDateTime()),
+                    launch.getTypeToString(),
+                };
+                
+                if (launch.getType().equals(LaunchType.EXPENSE)) {
+                    amountExpense++;
+                } else if (launch.getType().equals(LaunchType.INCOME)) {
+                    amountIncome++;
+                }
+                
+                tableModel.addRow(row);
             }
             
-            tableModel.addRow(row);
+            jIncomeTitle.setText("Total de receitas: " + amountIncome);
+            jExpenseTitle.setText("Total de despesas: " + amountExpense);
+            
+            jReleasesByDateTable.setModel(tableModel);
+            jReleasesByDateTable.setVisible(false);
+            jReleasesByDateTable.setVisible(true);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        
-        jIncomeTitle.setText("Total de receitas: " + amountIncome);
-        jExpenseTitle.setText("Total de despesas: " + amountExpense);
-        
-        jReleasesByDateTable.setModel(tableModel);
-        jReleasesByDateTable.setVisible(false);
-        jReleasesByDateTable.setVisible(true);
     }
 
     /**
@@ -112,7 +121,7 @@ public class MainView extends javax.swing.JFrame {
         try {
             double totalBalance = FinancialControl.checkTotalBalance();
             jTotalBalance.setText("Saldo total é " + ConverterUtils.formatToCurrency(totalBalance));    
-        } catch (ArithmeticException ex) {
+        } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo total", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -121,11 +130,11 @@ public class MainView extends javax.swing.JFrame {
      * Carrega o saldo atual e exibe na interface gráfica.
      * 
      */
-    private void loadCurrentBalance() {
+    private void loadCurrentBalance(LocalDateTime dateTime) {
         try {
-            double currentBalance = FinancialControl.checkCurrentBalance(LocalDateTime.now());
+            double currentBalance = FinancialControl.checkCurrentBalance(dateTime);
             jBalanceResult.setText("Seu saldo é " + ConverterUtils.formatToCurrency(currentBalance));    
-        } catch (ArithmeticException ex) {
+        } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo atual", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -152,6 +161,15 @@ public class MainView extends javax.swing.JFrame {
         addExpenseView.setVisible(true);
         
         dispose();
+    }
+    
+    private void isValidDate() {
+        try {
+            LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDate.getText());
+            loadCurrentBalance(dateTime);
+        } catch (DateTimeParseException | IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /**
@@ -184,7 +202,7 @@ public class MainView extends javax.swing.JFrame {
         jIncome.setBorder(javax.swing.BorderFactory.createTitledBorder("Receita"));
 
         jAddIncome.setText("Nova receita");
-        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jAddIncome.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddIncome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -217,7 +235,7 @@ public class MainView extends javax.swing.JFrame {
         jExpense.setBorder(javax.swing.BorderFactory.createTitledBorder("Despesa"));
 
         jAddExpense.setText("Nova despesa");
-        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jAddExpense.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddExpense.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -247,6 +265,7 @@ public class MainView extends javax.swing.JFrame {
                 .addGap(26, 26, 26))
         );
 
+        jReleasesByDateTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jReleasesByDateTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -260,7 +279,7 @@ public class MainView extends javax.swing.JFrame {
         jReleasesByDateTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jReleasesByDateTitle.setText("Lançamentos (ordenados por data)");
 
-        jCheckBalance.setBorder(javax.swing.BorderFactory.createTitledBorder("Consultar Saldo"));
+        jCheckBalance.setBorder(javax.swing.BorderFactory.createTitledBorder("Consultar Saldo - Pressione 'Enter' para atualizar o saldo"));
 
         jDateLabel.setText("Data");
 
@@ -269,6 +288,11 @@ public class MainView extends javax.swing.JFrame {
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        jDate.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jDateKeyPressed(evt);
+            }
+        });
 
         jBalanceResult.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBalanceResult.setText("Seu saldo é R$ 0000,00");
@@ -356,12 +380,20 @@ public class MainView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jAddIncomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAddIncomeMouseClicked
+        jAddIncome.setSelected(false);
         showAddIncomeView();
     }//GEN-LAST:event_jAddIncomeMouseClicked
 
     private void jAddExpenseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAddExpenseMouseClicked
+        jAddExpense.setSelected(false);
         showAddExpenseView();
     }//GEN-LAST:event_jAddExpenseMouseClicked
+
+    private void jDateKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jDateKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            isValidDate();
+        }
+    }//GEN-LAST:event_jDateKeyPressed
 
     /**
      * @param args the command line arguments

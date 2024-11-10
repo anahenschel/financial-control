@@ -6,10 +6,16 @@ package model;
 
 import enums.ExpenseCategory;
 import enums.IncomeCategory;
+import enums.LaunchType;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import utils.ConverterUtils;
 
 /**
  *
@@ -75,13 +81,42 @@ public class FinancialControl {
     }
     
     /**
-     * Lista todos os lançamentos filtrados por uma data e hora específicas.
+     * Lista todos os lançamentos ordenados por data.
      *
-     * @param dataTime A data e hora usada como filtro para os lançamentos.
      * @return Uma lista de objetos Launch que correspondem ao filtro de data e hora especificado.
+     * @throws java.io.IOException
      */
-    public static List<Launch> listReleasesByFilter(LocalDateTime dataTime) {
+    public static List<Launch> listReleasesOrderByDate() throws IOException {
         List<Launch> listLaunchByFilter = new ArrayList<>();
+        
+        try {
+            List<Object> listRegisters = persistenceCSVImpl.listRegisterByType(LaunchType.ALL);
+            
+            for (Object register : listRegisters) {
+                if (register instanceof String[] columns) {
+                    LaunchType launchType = LaunchType.valueOf(columns[0]);
+                    LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
+                    double amount = Double.parseDouble(columns[3]);
+                    
+                    Launch launch;
+                    if (launchType == LaunchType.INCOME) {
+                        IncomeCategory incomeCategory = IncomeCategory.fromDescription(columns[1]);
+                        launch = new Income(localDateTime, amount, incomeCategory);
+                    } else if (launchType == LaunchType.EXPENSE) {
+                        ExpenseCategory expenseCategory = ExpenseCategory.fromDescription(columns[1]);
+                        launch = new Expense(localDateTime, amount, expenseCategory);
+                    } else {
+                        continue;
+                    }
+
+                    listLaunchByFilter.add(launch);
+                }
+            }
+            
+            listLaunchByFilter.sort(Comparator.comparing(Launch::getDateTime).reversed());
+        } catch (IOException ex) {
+            throw new IOException("Erro ao listar os registros!");
+        }
         
         return listLaunchByFilter;
     }
@@ -91,20 +126,54 @@ public class FinancialControl {
      *
      * @param dateTime A data e hora para a qual o saldo atual será verificado.
      * @return O saldo atual como um valor double para a data e hora especificada.
+     * @throws java.io.IOException
      */
-    public static double checkCurrentBalance(LocalDateTime dateTime) {
-       double currentBalance = 0;
-       
-       return currentBalance;
+    public static double checkCurrentBalance(LocalDateTime dateTime) throws IOException {
+        double currentBalance = 0;
+        
+        try {
+            List<Launch> listReleases = listReleasesOrderByDate();
+            
+            List<Launch> filteredReleases = listReleases.stream()
+                .filter(launch -> launch.getDateTime().toLocalDate().isEqual(dateTime.toLocalDate()))
+                .collect(Collectors.toList());
+            
+            for (Launch launch : filteredReleases) {
+                if (launch.getType() == LaunchType.EXPENSE) {
+                    currentBalance -= launch.getAmount();
+                } else if (launch.getType() == LaunchType.INCOME) {
+                    currentBalance += launch.getAmount();
+                }
+            }
+        } catch (IOException ex) {
+            throw new IOException("Erro ao obter o saldo atual!");
+        }
+        
+        return currentBalance;
     }
     
     /**
      * Verifica o saldo total acumulado.
      *
      * @return O saldo total acumulado como um valor double.
+     * @throws java.io.IOException
      */
-    public static double checkTotalBalance() {
+    public static double checkTotalBalance() throws IOException {
        double totalBalance = 0;
+       
+       try {
+            List<Launch> listReleases = listReleasesOrderByDate();
+            
+            for (Launch launch : listReleases) {
+                if (launch.getType() == LaunchType.EXPENSE) {
+                    totalBalance -= launch.getAmount();
+                } else if (launch.getType() == LaunchType.INCOME) {
+                    totalBalance += launch.getAmount();
+                }
+            }
+        } catch (IOException ex) {
+            throw new IOException("Erro ao obter o saldo total!");
+        }
        
        return totalBalance;
     }
