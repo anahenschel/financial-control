@@ -5,9 +5,11 @@
 package view;
 
 import enums.LaunchType;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -52,7 +54,7 @@ public class MainView extends javax.swing.JFrame {
     public void screen() {
         loadRelasesByDateTable();
         loadTotalBalance();
-        loadCurrentBalance();
+        loadCurrentBalance(LocalDateTime.now());
     }
     
     /**
@@ -119,7 +121,7 @@ public class MainView extends javax.swing.JFrame {
         try {
             double totalBalance = FinancialControl.checkTotalBalance();
             jTotalBalance.setText("Saldo total é " + ConverterUtils.formatToCurrency(totalBalance));    
-        } catch (ArithmeticException ex) {
+        } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo total", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -128,11 +130,11 @@ public class MainView extends javax.swing.JFrame {
      * Carrega o saldo atual e exibe na interface gráfica.
      * 
      */
-    private void loadCurrentBalance() {
+    private void loadCurrentBalance(LocalDateTime dateTime) {
         try {
-            double currentBalance = FinancialControl.checkCurrentBalance(LocalDateTime.now());
+            double currentBalance = FinancialControl.checkCurrentBalance(dateTime);
             jBalanceResult.setText("Seu saldo é " + ConverterUtils.formatToCurrency(currentBalance));    
-        } catch (ArithmeticException ex) {
+        } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo atual", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -159,6 +161,15 @@ public class MainView extends javax.swing.JFrame {
         addExpenseView.setVisible(true);
         
         dispose();
+    }
+    
+    private void isValidDate() {
+        try {
+            LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDate.getText());
+            loadCurrentBalance(dateTime);
+        } catch (DateTimeParseException | IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     /**
@@ -268,7 +279,7 @@ public class MainView extends javax.swing.JFrame {
         jReleasesByDateTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jReleasesByDateTitle.setText("Lançamentos (ordenados por data)");
 
-        jCheckBalance.setBorder(javax.swing.BorderFactory.createTitledBorder("Consultar Saldo"));
+        jCheckBalance.setBorder(javax.swing.BorderFactory.createTitledBorder("Consultar Saldo - Pressione 'Enter' para atualizar o saldo"));
 
         jDateLabel.setText("Data");
 
@@ -277,6 +288,11 @@ public class MainView extends javax.swing.JFrame {
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        jDate.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jDateKeyPressed(evt);
+            }
+        });
 
         jBalanceResult.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBalanceResult.setText("Seu saldo é R$ 0000,00");
@@ -364,12 +380,20 @@ public class MainView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jAddIncomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAddIncomeMouseClicked
+        jAddIncome.setSelected(false);
         showAddIncomeView();
     }//GEN-LAST:event_jAddIncomeMouseClicked
 
     private void jAddExpenseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAddExpenseMouseClicked
+        jAddExpense.setSelected(false);
         showAddExpenseView();
     }//GEN-LAST:event_jAddExpenseMouseClicked
+
+    private void jDateKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jDateKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            isValidDate();
+        }
+    }//GEN-LAST:event_jDateKeyPressed
 
     /**
      * @param args the command line arguments

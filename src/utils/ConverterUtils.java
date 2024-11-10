@@ -46,7 +46,7 @@ public class ConverterUtils {
      * @return O objeto LocalDateTime correspondente.
      * @throws IllegalArgumentException se a data não for válida ou se a conversão falhar.
      */
-    public static LocalDateTime convertToLocalDateTime(String date) {
+    public static LocalDateTime convertToLocalDateTime(String date) throws DateTimeParseException, IllegalArgumentException {
         LocalDateTime localDateTime;
         try {
             LocalDate localDate = LocalDate.parse(date, formatter);

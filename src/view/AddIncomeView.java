@@ -324,10 +324,12 @@ public class AddIncomeView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBackWindowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBackWindowMouseClicked
+        jBackWindow.setSelected(false);
         showMainView();
     }//GEN-LAST:event_jBackWindowMouseClicked
 
     private void jSaveIncomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSaveIncomeMouseClicked
+        jSaveIncome.setSelected(false);
         saveIncome();
     }//GEN-LAST:event_jSaveIncomeMouseClicked
 

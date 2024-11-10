@@ -97,7 +97,7 @@ public class AddExpenseView extends javax.swing.JFrame {
      * Exibe a tela principal da aplicação e fecha a tela atual.
      *
      */
-    private void showMainView() {
+    private void showMainView() {        
         MainView mainView = MainView.getMainView();
         mainView.screen();
         mainView.setVisible(true);
@@ -322,10 +322,12 @@ public class AddExpenseView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBackWindowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBackWindowMouseClicked
+        jBackWindow.setSelected(false);
         showMainView();
     }//GEN-LAST:event_jBackWindowMouseClicked
 
     private void jSaveExpenseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSaveExpenseMouseClicked
+        jSaveExpense.setSelected(false);
         saveExpense();
     }//GEN-LAST:event_jSaveExpenseMouseClicked
 

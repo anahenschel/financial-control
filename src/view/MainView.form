@@ -224,7 +224,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Consultar Saldo"/>
+                <TitledBorder title="Consultar Saldo - Pressione &apos;Enter&apos; para atualizar o saldo"/>
               </Border>
             </Property>
           </Properties>
@@ -269,6 +269,9 @@
                   <Format format="##/##/####" subtype="-1" type="5"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jDateKeyPressed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jBalanceResult">
               <Properties>
