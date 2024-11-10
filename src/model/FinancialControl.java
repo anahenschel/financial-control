@@ -20,11 +20,12 @@ import utils.ConverterUtils;
  * @author lucas
  */
 public class FinancialControl {
+
     private static final PersistenceCSVImpl persistenceCSVImpl = PersistenceCSVImpl.getPersistenceCSVImpl();
-    
+
     /**
      * Cria as receitas com base nos parametros recebidos
-     * 
+     *
      * @param amount O valor da receita
      * @param incomeCategory A categoria da receita
      * @param dateTime A data e hora da receita
@@ -35,27 +36,27 @@ public class FinancialControl {
         income.setDateTime(dateTime);
         income.setAmount(amount);
         income.setIncomeCategory(incomeCategory);
-        
+
         persistenceCSVImpl.saveRegister(income, null);
     }
-    
+
     /**
      * Cria as despesas com base nos parametros recebidos
-     * 
+     *
      * @param amount O valor da despesa
      * @param expenseCategory A categoria da despesa
      * @param dateTime A data e hora da despesa
      * @throws java.io.IOException
      */
-    public static void createExpense(double amount, ExpenseCategory expenseCategory, LocalDateTime dateTime) throws IOException { 
+    public static void createExpense(double amount, ExpenseCategory expenseCategory, LocalDateTime dateTime) throws IOException {
         Expense expense = new Expense();
         expense.setDateTime(dateTime);
         expense.setAmount(amount);
         expense.setExpenseCategory(expenseCategory);
-        
+
         persistenceCSVImpl.saveRegister(null, expense);
     }
-    
+
     /**
      * Lista todas as receitas armazenadas.
      *
@@ -86,16 +87,16 @@ public class FinancialControl {
         }
         return listIncome;
     }
-    
+
     /**
      * Lista todas as despesas armazenadas.
      *
      * @return Uma lista de objetos Expense representando todas as despesas.
      * @throws java.io.IOException
      */
-    public static List<Expense> listExpense() throws IOException{
+    public static List<Expense> listExpense() throws IOException {
         List<Expense> listExpense = new ArrayList<>();
-        
+
         try {
             List<Object> listRegisters = persistenceCSVImpl.listRegisterByType(LaunchType.INCOME);
 
@@ -115,28 +116,29 @@ public class FinancialControl {
         } catch (IOException ex) {
             throw new IOException("Erro ao listar os registros!");
         }
-        
+
         return listExpense;
     }
-    
+
     /**
      * Lista todos os lançamentos ordenados por data.
      *
-     * @return Uma lista de objetos Launch que correspondem ao filtro de data e hora especificado.
+     * @return Uma lista de objetos Launch que correspondem ao filtro de data e
+     * hora especificado.
      * @throws java.io.IOException
      */
     public static List<Launch> listReleasesOrderByDate() throws IOException {
         List<Launch> listLaunchByFilter = new ArrayList<>();
-        
+
         try {
             List<Object> listRegisters = persistenceCSVImpl.listRegisterByType(LaunchType.ALL);
-            
+
             for (Object register : listRegisters) {
                 if (register instanceof String[] columns) {
                     LaunchType launchType = LaunchType.valueOf(columns[0]);
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
                     double amount = Double.parseDouble(columns[3]);
-                    
+
                     Launch launch;
                     if (launchType == LaunchType.INCOME) {
                         IncomeCategory incomeCategory = IncomeCategory.fromDescription(columns[1]);
@@ -151,32 +153,33 @@ public class FinancialControl {
                     listLaunchByFilter.add(launch);
                 }
             }
-            
+
             listLaunchByFilter.sort(Comparator.comparing(Launch::getDateTime).reversed());
         } catch (IOException ex) {
             throw new IOException("Erro ao listar os registros!");
         }
-        
+
         return listLaunchByFilter;
     }
-    
+
     /**
      * Verifica o saldo atual em uma data e hora específica.
      *
      * @param dateTime A data e hora para a qual o saldo atual será verificado.
-     * @return O saldo atual como um valor double para a data e hora especificada.
+     * @return O saldo atual como um valor double para a data e hora
+     * especificada.
      * @throws java.io.IOException
      */
     public static double checkCurrentBalance(LocalDateTime dateTime) throws IOException {
         double currentBalance = 0;
-        
+
         try {
             List<Launch> listReleases = listReleasesOrderByDate();
-            
+
             List<Launch> filteredReleases = listReleases.stream()
-                .filter(launch -> !launch.getDateTime().toLocalDate().isAfter(dateTime.toLocalDate()))
-                .collect(Collectors.toList());
-            
+                    .filter(launch -> !launch.getDateTime().toLocalDate().isAfter(dateTime.toLocalDate()))
+                    .collect(Collectors.toList());
+
             for (Launch launch : filteredReleases) {
                 if (launch.getType() == LaunchType.EXPENSE) {
                     currentBalance -= launch.getAmount();
@@ -187,10 +190,10 @@ public class FinancialControl {
         } catch (IOException ex) {
             throw new IOException("Erro ao obter o saldo atual!");
         }
-        
+
         return currentBalance;
     }
-    
+
     /**
      * Verifica o saldo total acumulado.
      *
@@ -198,11 +201,11 @@ public class FinancialControl {
      * @throws java.io.IOException
      */
     public static double checkTotalBalance() throws IOException {
-       double totalBalance = 0;
-       
-       try {
+        double totalBalance = 0;
+
+        try {
             List<Launch> listReleases = listReleasesOrderByDate();
-            
+
             for (Launch launch : listReleases) {
                 if (launch.getType() == LaunchType.EXPENSE) {
                     totalBalance -= launch.getAmount();
@@ -213,7 +216,7 @@ public class FinancialControl {
         } catch (IOException ex) {
             throw new IOException("Erro ao obter o saldo total!");
         }
-       
-       return totalBalance;
+
+        return totalBalance;
     }
 }

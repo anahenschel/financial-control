@@ -20,18 +20,19 @@ import utils.ConverterUtils;
  * @author lucas
  */
 public class AddExpenseView extends javax.swing.JFrame {
+
     public static AddExpenseView addExpenseView;
-    
+
     /**
      * Creates new form AddIncomeView
      */
     public AddExpenseView() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
-        
+
         listExpenseCategory();
     }
-    
+
     /**
      * Retorna uma instância da class AddExpenseView
      *
@@ -41,53 +42,54 @@ public class AddExpenseView extends javax.swing.JFrame {
         if (addExpenseView == null) {
             addExpenseView = new AddExpenseView();
         }
-        
+
         return addExpenseView;
     }
-    
+
     /**
-     * Inicializa a janela, configurando os dados iniciais de despesas para exibição.
+     * Inicializa a janela, configurando os dados iniciais de despesas para
+     * exibição.
      *
      */
     public void screen() {
         listExpense();
         resetInteractions();
     }
-    
+
     /**
      * Preenche a tabela com a lista de despesas cadastradas.
      *
      */
     private void listExpense() {
-        try{
-        DefaultTableModel tableModel = new DefaultTableModel();
+        try {
+            DefaultTableModel tableModel = new DefaultTableModel();
 
-        tableModel.addColumn("Valor");
-        tableModel.addColumn("Data");
-        tableModel.addColumn("Categoria");
-        
-        jExpenseTable.setRowHeight(35);
-        
-        List<Expense> listExpense = FinancialControl.listExpense();
-        
-        for (Expense expense : listExpense) {
-            Object[] row = {
-                ConverterUtils.formatToCurrency(expense.getAmount()),
-                ConverterUtils.formatToDate(expense.getDateTime()),
-                expense.getExpenseCategory()
-            };
-            
-            tableModel.addRow(row);
-        }
-        
-        jExpenseTable.setModel(tableModel);
-        jExpenseTable.setVisible(false);
-        jExpenseTable.setVisible(true);
-        }catch(IOException ex){
+            tableModel.addColumn("Valor");
+            tableModel.addColumn("Data");
+            tableModel.addColumn("Categoria");
+
+            jExpenseTable.setRowHeight(35);
+
+            List<Expense> listExpense = FinancialControl.listExpense();
+
+            for (Expense expense : listExpense) {
+                Object[] row = {
+                    ConverterUtils.formatToCurrency(expense.getAmount()),
+                    ConverterUtils.formatToDate(expense.getDateTime()),
+                    expense.getExpenseCategory()
+                };
+
+                tableModel.addRow(row);
+            }
+
+            jExpenseTable.setModel(tableModel);
+            jExpenseTable.setVisible(false);
+            jExpenseTable.setVisible(true);
+        } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     /**
      * Preenche o `JComboBox` com as categorias de despesas disponíveis.
      *
@@ -97,49 +99,50 @@ public class AddExpenseView extends javax.swing.JFrame {
             jExpenseCategory.addItem(expenseCategory);
         }
     }
-    
+
     /**
      * Exibe a tela principal da aplicação e fecha a tela atual.
      *
      */
-    private void showMainView() {        
+    private void showMainView() {
         MainView mainView = MainView.getMainView();
         mainView.screen();
         mainView.setVisible(true);
-        
+
         dispose();
     }
 
     /**
-     * Formata os dados do formulário e envia para a camada de controle para salvar uma despesa.
-     * 
+     * Formata os dados do formulário e envia para a camada de controle para
+     * salvar uma despesa.
+     *
      */
     private void saveExpense() {
         try {
             LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDateTime.getText());
-            ExpenseCategory expenseCategory = (ExpenseCategory) jExpenseCategory.getSelectedItem();   
+            ExpenseCategory expenseCategory = (ExpenseCategory) jExpenseCategory.getSelectedItem();
             ConverterUtils.validCategory(null, expenseCategory);
             double amount = ConverterUtils.convertToAmount(jAmount.getText());
 
             FinancialControl.createExpense(amount, expenseCategory, dateTime);
             JOptionPane.showMessageDialog(this, "Despesa adicionada com sucesso");
-            
+
             resetInteractions();
         } catch (IOException | IllegalArgumentException | DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     /**
      * Limpa os campos do formulário de despesa.
-     * 
+     *
      */
     private void resetInteractions() {
         jDateTime.setText("");
         jExpenseCategory.setSelectedIndex(0);
         jAmount.setText("");
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
