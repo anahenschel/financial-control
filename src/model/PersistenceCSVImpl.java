@@ -98,7 +98,7 @@ public class PersistenceCSVImpl implements PersistenceCSV {
                 
                 if (type == LaunchType.ALL) {
                     listRegister.add(columns);
-                } else if (columns[0].equals(type)) {
+                } else if (columns[0].equals(type.toString())) {
                     listRegister.add(columns);
                 }
             }
