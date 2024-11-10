@@ -98,7 +98,7 @@ public class FinancialControl {
         List<Expense> listExpense = new ArrayList<>();
 
         try {
-            List<Object> listRegisters = persistenceCSVImpl.listRegisterByType(LaunchType.INCOME);
+            List<Object> listRegisters = persistenceCSVImpl.listRegisterByType(LaunchType.EXPENSE);
 
             for (Object register : listRegisters) {
                 if (register instanceof String[] columns) {
