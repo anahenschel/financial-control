@@ -135,7 +135,7 @@ public class FinancialControl {
             List<Launch> listReleases = listReleasesOrderByDate();
             
             List<Launch> filteredReleases = listReleases.stream()
-                .filter(launch -> launch.getDateTime().toLocalDate().isEqual(dateTime.toLocalDate()))
+                .filter(launch -> !launch.getDateTime().toLocalDate().isAfter(dateTime.toLocalDate()))
                 .collect(Collectors.toList());
             
             for (Launch launch : filteredReleases) {
