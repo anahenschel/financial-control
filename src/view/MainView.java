@@ -5,6 +5,7 @@
 package view;
 
 import enums.LaunchType;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -70,38 +71,44 @@ public class MainView extends javax.swing.JFrame {
      *
      */
     private void loadRelasesByDateTable() {
-        DefaultTableModel tableModel = new DefaultTableModel();
-
-        tableModel.addColumn("Valor");
-        tableModel.addColumn("Data");
-        tableModel.addColumn("Tipo Lançamento");
-        
-        List<Launch> listLauchByFilter = FinancialControl.listReleasesByFilter(LocalDateTime.now());
-        int amountExpense = 0;
-        int amountIncome = 0;
-        
-        for (Launch launch : listLauchByFilter) {
-            Object[] row = {
-                launch.getAmount(),
-                ConverterUtils.formatToDate(launch.getDateTime()),
-                launch.getType()
-            };
+        try {
+            DefaultTableModel tableModel = new DefaultTableModel();
             
-            if (launch.getType().equals(LaunchType.EXPENSE)) {
-                amountExpense++;
-            } else if (launch.getType().equals(LaunchType.INCOME)) {
-                amountIncome++;
+            tableModel.addColumn("Valor");
+            tableModel.addColumn("Data");
+            tableModel.addColumn("Tipo Lançamento");
+            
+            jReleasesByDateTable.setRowHeight(35);
+                        
+            List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
+            int amountExpense = 0;
+            int amountIncome = 0;
+            
+            for (Launch launch : listLauchByFilter) {
+                Object[] row = {
+                    ConverterUtils.formatToCurrency(launch.getAmount()),
+                    ConverterUtils.formatToDate(launch.getDateTime()),
+                    launch.getTypeToString(),
+                };
+                
+                if (launch.getType().equals(LaunchType.EXPENSE)) {
+                    amountExpense++;
+                } else if (launch.getType().equals(LaunchType.INCOME)) {
+                    amountIncome++;
+                }
+                
+                tableModel.addRow(row);
             }
             
-            tableModel.addRow(row);
+            jIncomeTitle.setText("Total de receitas: " + amountIncome);
+            jExpenseTitle.setText("Total de despesas: " + amountExpense);
+            
+            jReleasesByDateTable.setModel(tableModel);
+            jReleasesByDateTable.setVisible(false);
+            jReleasesByDateTable.setVisible(true);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        
-        jIncomeTitle.setText("Total de receitas: " + amountIncome);
-        jExpenseTitle.setText("Total de despesas: " + amountExpense);
-        
-        jReleasesByDateTable.setModel(tableModel);
-        jReleasesByDateTable.setVisible(false);
-        jReleasesByDateTable.setVisible(true);
     }
 
     /**
@@ -184,7 +191,7 @@ public class MainView extends javax.swing.JFrame {
         jIncome.setBorder(javax.swing.BorderFactory.createTitledBorder("Receita"));
 
         jAddIncome.setText("Nova receita");
-        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jAddIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jAddIncome.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddIncome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -217,7 +224,7 @@ public class MainView extends javax.swing.JFrame {
         jExpense.setBorder(javax.swing.BorderFactory.createTitledBorder("Despesa"));
 
         jAddExpense.setText("Nova despesa");
-        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jAddExpense.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jAddExpense.setPreferredSize(new java.awt.Dimension(185, 40));
         jAddExpense.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -247,6 +254,7 @@ public class MainView extends javax.swing.JFrame {
                 .addGap(26, 26, 26))
         );
 
+        jReleasesByDateTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jReleasesByDateTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 

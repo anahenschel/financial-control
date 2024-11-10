@@ -64,11 +64,13 @@ public class AddIncomeView extends javax.swing.JFrame {
         tableModel.addColumn("Data");
         tableModel.addColumn("Categoria");
         
+        jIncomeTable.setRowHeight(35);
+        
         List<Income> listIncome = FinancialControl.listIncome();
         
         for (Income income : listIncome) {
             Object[] row = {
-                income.getAmount(),
+                ConverterUtils.formatToCurrency(income.getAmount()),
                 ConverterUtils.formatToDate(income.getDateTime()),
                 income.getIncomeCategory()
             };
@@ -118,6 +120,8 @@ public class AddIncomeView extends javax.swing.JFrame {
             double amount = ConverterUtils.convertToAmount(jAmount.getText());
             
             FinancialControl.createIncome(amount, incomeCategory, dateTime);
+            JOptionPane.showMessageDialog(this, "Receita adicionada com sucesso");
+            
             resetInteractions();
         } catch (IOException | IllegalArgumentException | DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -192,7 +196,7 @@ public class AddIncomeView extends javax.swing.JFrame {
         jIncomeCategory.setPreferredSize(new java.awt.Dimension(300, 40));
 
         jSaveIncome.setText("Salvar Receita");
-        jSaveIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jSaveIncome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jSaveIncome.setPreferredSize(new java.awt.Dimension(200, 40));
         jSaveIncome.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -201,7 +205,7 @@ public class AddIncomeView extends javax.swing.JFrame {
         });
 
         jBackWindow.setText("Voltar");
-        jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jBackWindow.setPreferredSize(new java.awt.Dimension(200, 40));
         jBackWindow.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

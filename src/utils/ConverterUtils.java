@@ -63,6 +63,21 @@ public class ConverterUtils {
     }
     
     /**
+     * Faz o parsing de uma string de data e hora no formato ISO 8601 para um objeto LocalDateTime.
+     *
+     * @param date a string de data e hora a ser convertida no formato ISO 8601
+     * @return um objeto LocalDateTime representando a data e hora convertida
+     * @throws IllegalArgumentException se a string de entrada não estiver em um formato ISO 8601 válido
+     */
+    public static LocalDateTime parseIsoDateTime(String date) throws DateTimeParseException {
+        try {
+            return LocalDateTime.parse(date);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Por favor, informe uma data válida no formato ISO 8601 (ex: 2024-01-22T09:52:52.598782400)", e);
+        }
+    }
+    
+    /**
      * Verifica a validade das categorias de receita e despesa.
      *
      * @param incCat A categoria de receita, representada por um objeto IncomeCategory.

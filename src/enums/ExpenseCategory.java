@@ -28,6 +28,25 @@ public enum ExpenseCategory {
     ExpenseCategory(String description) {
         this.description = description;
     }
+    
+    /**
+     * Converte uma descrição de categoria de despesa para o respectivo valor do enum ExpenseCategory.
+     * 
+     *
+     * @param description A descrição da categoria de despesa que se deseja converter.
+     * @return O valor correspondente do enum ExpenseCategory com a descrição fornecida.
+     * @throws IllegalArgumentException Se a descrição fornecida não corresponder a nenhuma categoria válida
+     *                                  de ExpenseCategory.
+     */
+    public static ExpenseCategory fromDescription(String description) {
+        for (ExpenseCategory category : ExpenseCategory.values()) {
+            if (category.toString().equalsIgnoreCase(description)) {
+                return category;
+            }
+        }
+        
+        throw new IllegalArgumentException("Categoria de despesa inválida: " + description);
+    }
 
     @Override
     public String toString() {
