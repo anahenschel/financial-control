@@ -30,7 +30,6 @@ public class PersistenceCSVImpl implements PersistenceCSV {
     
     /**
      * Retorna uma instância única de PersistenceCSVImpl.
-     * 
      *
      * @return A instância única de PersistenceCSVImpl.
      */
@@ -43,8 +42,8 @@ public class PersistenceCSVImpl implements PersistenceCSV {
     }
     
     @Override
-    public void createFile() throws IOException {
-        launchFile = new File("launch.csv");
+    public void createFile(String file) throws IOException {
+        launchFile = new File(file);
 
         if (!launchFile.exists()) {
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(launchFile), "UTF-8"))) {
