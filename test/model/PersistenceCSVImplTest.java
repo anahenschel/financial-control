@@ -24,7 +24,9 @@ public class PersistenceCSVImplTest {
     
     @Test
     public void testCreateFile() throws IOException {
-        persistenceCSVImpl.createFile();
+        
+        // exemplo de como criar arquivo dentro da pasta de teste
+        persistenceCSVImpl.createFile("./test/files/teste.csv");
     }
     
     @Test
