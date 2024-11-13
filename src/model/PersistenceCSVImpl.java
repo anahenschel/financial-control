@@ -109,4 +109,8 @@ public class PersistenceCSVImpl implements PersistenceCSV {
         
         return listRegister;
     }
+
+    public File getLaunchFile() {
+        return launchFile;
+    }
 }
