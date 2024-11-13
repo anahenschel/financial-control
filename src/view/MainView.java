@@ -82,6 +82,7 @@ public class MainView extends javax.swing.JFrame {
             tableModel.addColumn("Data");
             tableModel.addColumn("Tipo Lançamento");
             tableModel.addColumn("Categoria");
+            tableModel.addColumn("Saldo total");
             
             jReleasesByDateTable.setRowHeight(35);
                         
@@ -105,6 +106,7 @@ public class MainView extends javax.swing.JFrame {
                     ConverterUtils.formatToDate(launch.getDateTime()),
                     launch.getTypeToString(),
                     category,
+                    ConverterUtils.formatToCurrency(launch.getTotalBalance()),
                 };
                 
                 tableModel.addRow(row);
@@ -363,7 +365,7 @@ public class MainView extends javax.swing.JFrame {
                     .addComponent(jExpense, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jCheckBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(44, 44, 44)
+                .addGap(45, 45, 45)
                 .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jReleasesByDateTitle)
                     .addComponent(jTotalBalance))

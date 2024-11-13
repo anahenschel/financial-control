@@ -21,7 +21,7 @@ public class Income extends Launch {
      *
      */
     public Income() {
-        super(null, 0, LaunchType.INCOME);
+        super(null, 0, LaunchType.INCOME, 0);
     }
 	
     /**
@@ -33,8 +33,8 @@ public class Income extends Launch {
      * @param incomeCategory A categoria da receita, representada por um objeto IncomeCategory.
      *
      */
-    public Income(LocalDateTime dateTime, double amount, IncomeCategory incomeCategory) {
-	super(dateTime, amount, LaunchType.INCOME);
+    public Income(LocalDateTime dateTime, double amount, IncomeCategory incomeCategory, double totalBalance) {
+	super(dateTime, amount, LaunchType.INCOME, totalBalance);
 	this.incomeCategory = incomeCategory;
     }
 	

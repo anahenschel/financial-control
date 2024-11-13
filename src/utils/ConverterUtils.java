@@ -33,13 +33,14 @@ public class ConverterUtils {
     public static double convertToAmount(String amount) throws IllegalArgumentException, NumberFormatException {
         double convertedAmount = 0;
         try {
-            convertedAmount = Double.parseDouble(amount.replace(",", "."));
+            String normalizedAmount = amount.replace(".", "").replace(",", ".");
+            convertedAmount = Double.parseDouble(normalizedAmount);
             
             if (convertedAmount <= 0) {
                 throw new IllegalArgumentException("Por favor, informe um valor maior do que zero.");
             }
             
-            if (!isValidAmount(amount)) {
+            if (!isValidAmount(normalizedAmount)) {
                 throw new IllegalArgumentException("Por favor, informe um valor com até 15 caracteres antes do separador decimal e no máximo 2 caracteres após o separador");
             }
         } catch (NumberFormatException e) {

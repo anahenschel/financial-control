@@ -21,7 +21,7 @@ public class Expense extends Launch {
      *
      */
     public Expense() {
-        super(null, 0, LaunchType.EXPENSE);
+        super(null, 0, LaunchType.EXPENSE, 0);
     }
 	
     /**
@@ -33,8 +33,8 @@ public class Expense extends Launch {
      * @param expenseCategory A categoria da despesa, representada pelo objeto ExpenseCategory.
      *
      */
-    public Expense(LocalDateTime dateTime, double amount, ExpenseCategory expenseCategory) {
-	super(dateTime, amount, LaunchType.EXPENSE);
+    public Expense(LocalDateTime dateTime, double amount, ExpenseCategory expenseCategory, double totalBalance) {
+	super(dateTime, amount, LaunchType.EXPENSE, totalBalance);
         this.expenseCategory = expenseCategory;
     }
 	

@@ -123,8 +123,9 @@ public class AddExpenseView extends javax.swing.JFrame {
             ExpenseCategory expenseCategory = (ExpenseCategory) jExpenseCategory.getSelectedItem();
             ConverterUtils.validCategory(null, expenseCategory);
             double amount = ConverterUtils.convertToAmount(jAmount.getText());
+            double totalBalance = FinancialControl.checkTotalBalance() + amount;
 
-            FinancialControl.createExpense(amount, expenseCategory, dateTime);
+            FinancialControl.createExpense(amount, expenseCategory, dateTime, totalBalance);
             JOptionPane.showMessageDialog(this, "Despesa adicionada com sucesso");
 
             listExpense();
@@ -141,7 +142,7 @@ public class AddExpenseView extends javax.swing.JFrame {
     private void resetInteractions() {
         jDateTime.setText("");
         jExpenseCategory.setSelectedIndex(0);
-        jAmount.setText("");
+        jAmount.setText("000000000000000000");
     }
 
     /**
@@ -166,7 +167,7 @@ public class AddExpenseView extends javax.swing.JFrame {
         jExpenseCategory = new javax.swing.JComboBox<>();
         jSaveExpense = new javax.swing.JToggleButton();
         jBackWindow = new javax.swing.JToggleButton();
-        jAmount = new javax.swing.JTextField();
+        jAmount = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -208,11 +209,6 @@ public class AddExpenseView extends javax.swing.JFrame {
                 jSaveExpenseMouseClicked(evt);
             }
         });
-        jSaveExpense.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jSaveExpenseActionPerformed(evt);
-            }
-        });
 
         jBackWindow.setText("Voltar");
         jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -223,7 +219,17 @@ public class AddExpenseView extends javax.swing.JFrame {
             }
         });
 
+        try {
+            jAmount.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("###.###.###.###.###,##")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
         jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
+        jAmount.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jAmountMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jExpenseFormLayout = new javax.swing.GroupLayout(jExpenseForm);
         jExpenseForm.setLayout(jExpenseFormLayout);
@@ -246,7 +252,7 @@ public class AddExpenseView extends javax.swing.JFrame {
                             .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jExpenseCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jExpenseCategoryLabel))))
-                    .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20))
         );
         jExpenseFormLayout.setVerticalGroup(
@@ -266,7 +272,7 @@ public class AddExpenseView extends javax.swing.JFrame {
                 .addComponent(jAmountLabel)
                 .addGap(5, 5, 5)
                 .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46)
+                .addGap(40, 40, 40)
                 .addGroup(jExpenseFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSaveExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBackWindow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -309,10 +315,10 @@ public class AddExpenseView extends javax.swing.JFrame {
             .addGroup(jMainLayout.createSequentialGroup()
                 .addGap(45, 45, 45)
                 .addComponent(jExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addGap(45, 45, 45)
                 .addComponent(jExpenseTitle)
                 .addGap(10, 10, 10)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addGap(45, 45, 45))
         );
 
@@ -348,6 +354,10 @@ public class AddExpenseView extends javax.swing.JFrame {
     private void jSaveExpenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveExpenseActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jSaveExpenseActionPerformed
+
+    private void jAmountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAmountMouseClicked
+        jAmount.setCaretPosition(0);
+    }//GEN-LAST:event_jAmountMouseClicked
 
     /**
      * @param args the command line arguments
@@ -386,7 +396,7 @@ public class AddExpenseView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField jAmount;
+    private javax.swing.JFormattedTextField jAmount;
     private javax.swing.JLabel jAmountLabel;
     private javax.swing.JToggleButton jBackWindow;
     private javax.swing.JFormattedTextField jDateTime;

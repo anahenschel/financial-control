@@ -15,6 +15,7 @@ public abstract class Launch {
     private LocalDateTime dateTime;
     private double amount;
     private LaunchType type;
+    private double totalBalance;
     
     /**
      * Construtor para a classe Launch que inicializa uma nova instância 
@@ -23,12 +24,14 @@ public abstract class Launch {
      * @param dateTime A data e hora do lançamento, representada por um objeto LocalDateTime.
      * @param amount O valor do lançamento.
      * @param type O tipo do lançamento, representado por um objeto LaunchType.
+     * @param totalBalance
      *
      * @throws IllegalArgumentException se type for LaunchType.ALL.
      */
-    public Launch(LocalDateTime dateTime, double amount, LaunchType type) {
+    public Launch(LocalDateTime dateTime, double amount, LaunchType type, double totalBalance) {
         this.dateTime = dateTime;
         this.amount = amount;
+        this.totalBalance = totalBalance;
         setType(type);
     }
 	
@@ -114,4 +117,12 @@ public abstract class Launch {
         
         this.type = type;
     }    
+
+    public double getTotalBalance() {
+        return totalBalance;
+    }
+
+    public void setTotalBalance(double totalBalance) {
+        this.totalBalance = totalBalance;
+    }
 }
