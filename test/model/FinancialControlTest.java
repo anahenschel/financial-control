@@ -53,7 +53,7 @@ public class FinancialControlTest {
         List<Income> listIncomes = FinancialControl.listIncome();
         
         assertNotNull(listIncomes);
-        assertEquals(2, listIncomes.size());
+        assertEquals(1, listIncomes.size());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class FinancialControlTest {
         List<Expense> listExpenses = FinancialControl.listExpense();
         
         assertNotNull(listExpenses);
-        assertEquals(2, listExpenses.size());
+        assertEquals(1, listExpenses.size());
     }
 
     @Test
@@ -84,10 +84,15 @@ public class FinancialControlTest {
         FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
         
         LocalDateTime dateTime = LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0);
-        FinancialControl.checkCurrentBalance(dateTime);
+        
+        assertEquals(10, FinancialControl.checkCurrentBalance(dateTime), 0);
     }
 
     @Test
-    public void testCheckTotalBalance() {
+    public void testCheckTotalBalance() throws IOException {
+        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
+        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        
+        assertEquals(-5, FinancialControl.checkTotalBalance(), 0);
     }
 }
