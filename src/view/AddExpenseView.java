@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import model.Expense;
 import model.FinancialControl;
@@ -192,6 +195,11 @@ public class AddExpenseView extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         jDateTime.setPreferredSize(new java.awt.Dimension(300, 40));
+        jDateTime.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jDateTimeMouseClicked(evt);
+            }
+        });
 
         jDateTimeLabel.setText("Data do lançamento");
 
@@ -225,9 +233,9 @@ public class AddExpenseView extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
-        jAmount.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jAmountMouseClicked(evt);
+        jAmount.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jAmountKeyPressed(evt);
             }
         });
 
@@ -355,9 +363,36 @@ public class AddExpenseView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jSaveExpenseActionPerformed
 
-    private void jAmountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAmountMouseClicked
-        jAmount.setCaretPosition(0);
-    }//GEN-LAST:event_jAmountMouseClicked
+    private void jDateTimeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jDateTimeMouseClicked
+        if (jDateTime.getText().equals("  /  /    ")) {
+            jDateTime.setCaretPosition(0);
+        }
+    }//GEN-LAST:event_jDateTimeMouseClicked
+
+    private void jAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jAmountKeyPressed
+        if (Character.isDigit(evt.getKeyChar())) {
+            String texto = jAmount.getText().replace(".", "").replace(",", "");
+
+            if (texto.length() >= 18) {
+                texto = texto.substring(1);
+            }
+
+            texto += evt.getKeyChar();
+            texto = String.format("%017d", Long.parseLong(texto));
+
+            String textoFormatado = String.format("%03d.%03d.%03d.%03d.%03d,%02d",
+                    Integer.parseInt(texto.substring(0, 3)),
+                    Integer.parseInt(texto.substring(3, 6)),
+                    Integer.parseInt(texto.substring(6, 9)),
+                    Integer.parseInt(texto.substring(9, 12)),
+                    Integer.parseInt(texto.substring(12, 15)),
+                    Integer.parseInt(texto.substring(15, 17))
+            );
+
+            jAmount.setText(textoFormatado);
+            jAmount.setCaretPosition(jAmount.getText().length());
+        }
+    }//GEN-LAST:event_jAmountKeyPressed
 
     /**
      * @param args the command line arguments

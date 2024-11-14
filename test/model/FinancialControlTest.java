@@ -36,19 +36,19 @@ public class FinancialControlTest {
 
     @Test
     public void testCreateIncome() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));
+        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), 0);
     }
 
 
     @Test
     public void testCreateExpense() throws IOException {      
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), 0);
     }
 
     @Test
     public void testListIncome() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), 0);        
+        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), 0);
         
         List<Income> listIncomes = FinancialControl.listIncome();
         
@@ -58,8 +58,8 @@ public class FinancialControlTest {
 
     @Test
     public void testListExpense() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), 0);        
+        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), 0);
         
         List<Expense> listExpenses = FinancialControl.listExpense();
         
@@ -69,8 +69,8 @@ public class FinancialControlTest {
 
     @Test
     public void testListReleasesByDate() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), 0);        
+        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), 0);
         
         List<Launch> listLaunches = FinancialControl.listReleasesOrderByDate();
         
@@ -80,8 +80,8 @@ public class FinancialControlTest {
 
     @Test
     public void testCheckCurrentBalance() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), 0);        
+        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), 0);
         
         LocalDateTime dateTime = LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0);
         
@@ -90,8 +90,8 @@ public class FinancialControlTest {
 
     @Test
     public void testCheckTotalBalance() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), 0);        
+        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), 0);
         
         assertEquals(-5, FinancialControl.checkTotalBalance(), 0);
     }

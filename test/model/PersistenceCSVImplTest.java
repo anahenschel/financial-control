@@ -52,7 +52,7 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso3_SalvarReceita() throws IOException {
-        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY);
+        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY, 0);
 
         persistence.saveRegister(income, null);
         
@@ -63,7 +63,7 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso4_SalvarDespesa() throws IOException {
-        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES);
+        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES, 0);
  
         persistence.saveRegister(null, expense);
 
@@ -75,8 +75,8 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso5_ListarTodosRegistros() throws IOException {
-        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY);
-        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES);
+        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY, 0);
+        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES, 0);
 
         persistence.saveRegister(income, null);
         persistence.saveRegister(null, expense);
@@ -88,8 +88,8 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso6_ListarSomenteReceitas() throws IOException {
-        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY);
-        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES);
+        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY, 0);
+        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES, 0);
 
         persistence.saveRegister(income, null);
         persistence.saveRegister(null, expense);
@@ -101,8 +101,8 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso7_ListarSomenteDespesas() throws IOException {
-        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY);
-        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES);
+        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY, 0);
+        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES, 0);
 
         persistence.saveRegister(income, null);
         persistence.saveRegister(null, expense);
