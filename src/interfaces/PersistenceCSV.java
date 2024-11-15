@@ -22,7 +22,7 @@ public interface PersistenceCSV {
      * 
      * @throws IOException
      */
-    public void createFile() throws IOException;
+    public void createFile(String file) throws IOException;
     
     /**
      * Salva um novo registro de receitas ou despesas no arquivo.

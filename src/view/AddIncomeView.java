@@ -20,18 +20,19 @@ import utils.ConverterUtils;
  * @author lucas
  */
 public class AddIncomeView extends javax.swing.JFrame {
+
     public static AddIncomeView addIncomeView;
-    
+
     /**
      * Creates new form AddIncomeView
      */
     public AddIncomeView() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
-        
+
         listIncomeCategory();
     }
-    
+
     /**
      * Retorna uma instância única da classe.
      *
@@ -41,10 +42,10 @@ public class AddIncomeView extends javax.swing.JFrame {
         if (addIncomeView == null) {
             addIncomeView = new AddIncomeView();
         }
-        
+
         return addIncomeView;
     }
-    
+
     /**
      * Inicializa a janela, configurando os dados iniciais para exibição.
      *
@@ -53,37 +54,41 @@ public class AddIncomeView extends javax.swing.JFrame {
         listIncome();
         resetInteractions();
     }
-    
+
     /**
      * Preenche a tabela com a lista de receitas cadastradas.
      *
      */
     private void listIncome() {
-        DefaultTableModel tableModel = new DefaultTableModel();
+        try {
+            DefaultTableModel tableModel = new DefaultTableModel();
 
-        tableModel.addColumn("Valor");
-        tableModel.addColumn("Data");
-        tableModel.addColumn("Categoria");
-        
-        jIncomeTable.setRowHeight(35);
-        
-        List<Income> listIncome = FinancialControl.listIncome();
-        
-        for (Income income : listIncome) {
-            Object[] row = {
-                ConverterUtils.formatToCurrency(income.getAmount()),
-                ConverterUtils.formatToDate(income.getDateTime()),
-                income.getIncomeCategory()
-            };
-            
-            tableModel.addRow(row);
+            tableModel.addColumn("Valor");
+            tableModel.addColumn("Data");
+            tableModel.addColumn("Categoria");
+
+            jIncomeTable.setRowHeight(35);
+
+            List<Income> listIncome = FinancialControl.listIncome();
+
+            for (Income income : listIncome) {
+                Object[] row = {
+                    ConverterUtils.formatToCurrency(income.getAmount()),
+                    ConverterUtils.formatToDate(income.getDateTime()),
+                    income.getIncomeCategory()
+                };
+
+                tableModel.addRow(row);
+            }
+
+            jIncomeTable.setModel(tableModel);
+            jIncomeTable.setVisible(false);
+            jIncomeTable.setVisible(true);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        
-        jIncomeTable.setModel(tableModel);
-        jIncomeTable.setVisible(false);
-        jIncomeTable.setVisible(true);
     }
-    
+
     /**
      * Preenche o `JComboBox` com as categorias de receitas disponíveis.
      *
@@ -93,7 +98,7 @@ public class AddIncomeView extends javax.swing.JFrame {
             jIncomeCategory.addItem(incomeCategory);
         }
     }
-    
+
     /**
      * Exibe a tela principal da aplicação e fecha a tela atual.
      *
@@ -102,12 +107,13 @@ public class AddIncomeView extends javax.swing.JFrame {
         MainView mainView = MainView.getMainView();
         mainView.screen();
         mainView.setVisible(true);
-        
+
         dispose();
     }
-    
+
     /**
-     * Formata os dados de entrada e envia-os para a camada de controle para criar um registro de receita.
+     * Formata os dados de entrada e envia-os para a camada de controle para
+     * criar um registro de receita.
      *
      * @throws IOException
      * @throws IllegalArgumentException
@@ -116,21 +122,23 @@ public class AddIncomeView extends javax.swing.JFrame {
     private void saveIncome() {
         try {
             LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDateTime.getText());
-            IncomeCategory incomeCategory = (IncomeCategory) jIncomeCategory.getSelectedItem();   
+            IncomeCategory incomeCategory = (IncomeCategory) jIncomeCategory.getSelectedItem();
             ConverterUtils.validCategory(incomeCategory, null);
             double amount = ConverterUtils.convertToAmount(jAmount.getText());
-            
+
             FinancialControl.createIncome(amount, incomeCategory, dateTime);
             JOptionPane.showMessageDialog(this, "Receita adicionada com sucesso");
-            
+
+            listIncome();
             resetInteractions();
         } catch (IOException | IllegalArgumentException | DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     /**
-     * Limpa os campos do formulário de entrada, preparando-os para uma nova inserção de dados.
+     * Limpa os campos do formulário de entrada, preparando-os para uma nova
+     * inserção de dados.
      */
     private void resetInteractions() {
         jDateTime.setText("");
@@ -204,6 +212,11 @@ public class AddIncomeView extends javax.swing.JFrame {
                 jSaveIncomeMouseClicked(evt);
             }
         });
+        jSaveIncome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jSaveIncomeActionPerformed(evt);
+            }
+        });
 
         jBackWindow.setText("Voltar");
         jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -211,6 +224,11 @@ public class AddIncomeView extends javax.swing.JFrame {
         jBackWindow.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jBackWindowMouseClicked(evt);
+            }
+        });
+        jBackWindow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBackWindowActionPerformed(evt);
             }
         });
 
@@ -333,6 +351,14 @@ public class AddIncomeView extends javax.swing.JFrame {
         jSaveIncome.setSelected(false);
         saveIncome();
     }//GEN-LAST:event_jSaveIncomeMouseClicked
+
+    private void jBackWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBackWindowActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBackWindowActionPerformed
+
+    private void jSaveIncomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveIncomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSaveIncomeActionPerformed
 
     /**
      * @param args the command line arguments
