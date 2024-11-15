@@ -170,22 +170,10 @@ public class AddIncomeView extends javax.swing.JFrame {
         jSaveIncome = new javax.swing.JToggleButton();
         jBackWindow = new javax.swing.JToggleButton();
         jAmount = new javax.swing.JFormattedTextField();
-        jMain1 = new javax.swing.JPanel();
-        jIncomeTitle1 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jIncomeTable1 = new javax.swing.JTable();
-        jIncome1 = new javax.swing.JPanel();
-        jIncomeForm1 = new javax.swing.JPanel();
-        jDateTime1 = new javax.swing.JFormattedTextField();
-        jDateTimeLabel1 = new javax.swing.JLabel();
-        jAmountLabel1 = new javax.swing.JLabel();
-        jIncomeCategoryLabel1 = new javax.swing.JLabel();
-        jIncomeCategory1 = new javax.swing.JComboBox<>();
-        jSaveIncome1 = new javax.swing.JToggleButton();
-        jBackWindow1 = new javax.swing.JToggleButton();
-        jAmount1 = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jMain.setPreferredSize(new java.awt.Dimension(1030, 737));
 
         jIncomeTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jIncomeTitle.setText("Receitas");
@@ -246,6 +234,11 @@ public class AddIncomeView extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
+        jAmount.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jAmountKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jIncomeFormLayout = new javax.swing.GroupLayout(jIncomeForm);
         jIncomeForm.setLayout(jIncomeFormLayout);
@@ -334,158 +327,7 @@ public class AddIncomeView extends javax.swing.JFrame {
                 .addGap(45, 45, 45)
                 .addComponent(jIncomeTitle)
                 .addGap(10, 10, 10)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
-                .addGap(45, 45, 45))
-        );
-
-        jIncomeTitle1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jIncomeTitle1.setText("Receitas");
-
-        jIncomeTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        jScrollPane2.setViewportView(jIncomeTable1);
-
-        jIncomeForm1.setBorder(javax.swing.BorderFactory.createTitledBorder("Adicionar Receita"));
-
-        try {
-            jDateTime1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        jDateTime1.setPreferredSize(new java.awt.Dimension(300, 40));
-        jDateTime1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jDateTime1MouseClicked(evt);
-            }
-        });
-
-        jDateTimeLabel1.setText("Data do lançamento");
-
-        jAmountLabel1.setText("Valor");
-
-        jIncomeCategoryLabel1.setText("Tipo de receita");
-
-        jIncomeCategory1.setPreferredSize(new java.awt.Dimension(300, 40));
-
-        jSaveIncome1.setText("Salvar Receita");
-        jSaveIncome1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jSaveIncome1.setPreferredSize(new java.awt.Dimension(200, 40));
-        jSaveIncome1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jSaveIncome1MouseClicked(evt);
-            }
-        });
-
-        jBackWindow1.setText("Voltar");
-        jBackWindow1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jBackWindow1.setPreferredSize(new java.awt.Dimension(200, 40));
-        jBackWindow1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jBackWindow1MouseClicked(evt);
-            }
-        });
-
-        try {
-            jAmount1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("###.###.###.###.###,##")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        jAmount1.setPreferredSize(new java.awt.Dimension(300, 40));
-
-        javax.swing.GroupLayout jIncomeForm1Layout = new javax.swing.GroupLayout(jIncomeForm1);
-        jIncomeForm1.setLayout(jIncomeForm1Layout);
-        jIncomeForm1Layout.setHorizontalGroup(
-            jIncomeForm1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jIncomeForm1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jIncomeForm1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jAmount1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jAmountLabel1)
-                    .addGroup(jIncomeForm1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jIncomeForm1Layout.createSequentialGroup()
-                            .addComponent(jBackWindow1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(50, 50, 50)
-                            .addComponent(jSaveIncome1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jIncomeForm1Layout.createSequentialGroup()
-                            .addGroup(jIncomeForm1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jDateTimeLabel1)
-                                .addComponent(jDateTime1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(80, 80, 80)
-                            .addGroup(jIncomeForm1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jIncomeCategory1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jIncomeCategoryLabel1)))))
-                .addGap(20, 20, 20))
-        );
-        jIncomeForm1Layout.setVerticalGroup(
-            jIncomeForm1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jIncomeForm1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jIncomeForm1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jIncomeForm1Layout.createSequentialGroup()
-                        .addComponent(jDateTimeLabel1)
-                        .addGap(5, 5, 5)
-                        .addComponent(jDateTime1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jIncomeForm1Layout.createSequentialGroup()
-                        .addComponent(jIncomeCategoryLabel1)
-                        .addGap(5, 5, 5)
-                        .addComponent(jIncomeCategory1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(30, 30, 30)
-                .addComponent(jAmountLabel1)
-                .addGap(5, 5, 5)
-                .addComponent(jAmount1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
-                .addGroup(jIncomeForm1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jSaveIncome1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBackWindow1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20))
-        );
-
-        javax.swing.GroupLayout jIncome1Layout = new javax.swing.GroupLayout(jIncome1);
-        jIncome1.setLayout(jIncome1Layout);
-        jIncome1Layout.setHorizontalGroup(
-            jIncome1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jIncome1Layout.createSequentialGroup()
-                .addContainerGap(150, Short.MAX_VALUE)
-                .addComponent(jIncomeForm1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(150, Short.MAX_VALUE))
-        );
-        jIncome1Layout.setVerticalGroup(
-            jIncome1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jIncome1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jIncomeForm1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        javax.swing.GroupLayout jMain1Layout = new javax.swing.GroupLayout(jMain1);
-        jMain1.setLayout(jMain1Layout);
-        jMain1Layout.setHorizontalGroup(
-            jMain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jMain1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jMain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addGroup(jMain1Layout.createSequentialGroup()
-                        .addComponent(jIncomeTitle1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(20, 20, 20))
-            .addComponent(jIncome1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jMain1Layout.setVerticalGroup(
-            jMain1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jMain1Layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addComponent(jIncome1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
-                .addComponent(jIncomeTitle1)
-                .addGap(10, 10, 10)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addGap(45, 45, 45))
         );
 
@@ -494,15 +336,12 @@ public class AddIncomeView extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jMain1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jMain1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addComponent(jMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -533,17 +372,27 @@ public class AddIncomeView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jDateTimeMouseClicked
 
-    private void jDateTime1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jDateTime1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jDateTime1MouseClicked
+    private void jAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jAmountKeyPressed
+        if (Character.isDigit(evt.getKeyChar())) {
+            String text = jAmount.getText().replace(".", "").replace(",", "");
 
-    private void jSaveIncome1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSaveIncome1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jSaveIncome1MouseClicked
+            text = text.substring(1);
+            text += evt.getKeyChar();
+            text = String.format("%017d", Long.parseLong(text));
 
-    private void jBackWindow1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBackWindow1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jBackWindow1MouseClicked
+            String formattedText = String.format("%03d.%03d.%03d.%03d.%03d,%02d",
+                    Integer.parseInt(text.substring(0, 3)),
+                    Integer.parseInt(text.substring(3, 6)),
+                    Integer.parseInt(text.substring(6, 9)),
+                    Integer.parseInt(text.substring(9, 12)),
+                    Integer.parseInt(text.substring(12, 15)),
+                    Integer.parseInt(text.substring(15, 17))
+            );
+
+            jAmount.setText(formattedText);
+            jAmount.setCaretPosition(jAmount.getText().length());
+        }
+    }//GEN-LAST:event_jAmountKeyPressed
 
     /**
      * @param args the command line arguments
@@ -582,32 +431,18 @@ public class AddIncomeView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFormattedTextField jAmount;
-    private javax.swing.JFormattedTextField jAmount1;
     private javax.swing.JLabel jAmountLabel;
-    private javax.swing.JLabel jAmountLabel1;
     private javax.swing.JToggleButton jBackWindow;
-    private javax.swing.JToggleButton jBackWindow1;
     private javax.swing.JFormattedTextField jDateTime;
-    private javax.swing.JFormattedTextField jDateTime1;
     private javax.swing.JLabel jDateTimeLabel;
-    private javax.swing.JLabel jDateTimeLabel1;
     private javax.swing.JPanel jIncome;
-    private javax.swing.JPanel jIncome1;
     private javax.swing.JComboBox<IncomeCategory> jIncomeCategory;
-    private javax.swing.JComboBox<IncomeCategory> jIncomeCategory1;
     private javax.swing.JLabel jIncomeCategoryLabel;
-    private javax.swing.JLabel jIncomeCategoryLabel1;
     private javax.swing.JPanel jIncomeForm;
-    private javax.swing.JPanel jIncomeForm1;
     private javax.swing.JTable jIncomeTable;
-    private javax.swing.JTable jIncomeTable1;
     private javax.swing.JLabel jIncomeTitle;
-    private javax.swing.JLabel jIncomeTitle1;
     private javax.swing.JPanel jMain;
-    private javax.swing.JPanel jMain1;
     private javax.swing.JToggleButton jSaveIncome;
-    private javax.swing.JToggleButton jSaveIncome1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
 }

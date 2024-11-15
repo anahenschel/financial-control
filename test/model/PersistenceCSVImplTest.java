@@ -39,7 +39,7 @@ public class PersistenceCSVImplTest {
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
        
-        assertEquals("launchType;category;dateTime;amount", linhas.get(0));
+        assertEquals("launchType;category;dateTime;amount;totalBalance", linhas.get(0));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class PersistenceCSVImplTest {
         
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
-        assertEquals("INCOME;Salário;2024-11-12T10:00;5000.0", linhas.get(1));
+        assertEquals("INCOME;Salário;2024-11-12T10:00;5000.0;0.0", linhas.get(1));
     };
 
     @Test
@@ -69,8 +69,7 @@ public class PersistenceCSVImplTest {
 
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
-        assertEquals("EXPENSE;Serviços;2024-11-12T10:00;1000.0", linhas.get(1));
-
+        assertEquals("EXPENSE;Serviços;2024-11-12T10:00;1000.0;0.0", linhas.get(1));
     }
 
     @Test

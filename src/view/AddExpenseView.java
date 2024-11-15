@@ -10,9 +10,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import model.Expense;
 import model.FinancialControl;
@@ -126,7 +123,7 @@ public class AddExpenseView extends javax.swing.JFrame {
             ExpenseCategory expenseCategory = (ExpenseCategory) jExpenseCategory.getSelectedItem();
             ConverterUtils.validCategory(null, expenseCategory);
             double amount = ConverterUtils.convertToAmount(jAmount.getText());
-            double totalBalance = FinancialControl.checkTotalBalance() + amount;
+            double totalBalance = FinancialControl.checkTotalBalance() - amount;
 
             FinancialControl.createExpense(amount, expenseCategory, dateTime, totalBalance);
             JOptionPane.showMessageDialog(this, "Despesa adicionada com sucesso");
@@ -371,25 +368,22 @@ public class AddExpenseView extends javax.swing.JFrame {
 
     private void jAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jAmountKeyPressed
         if (Character.isDigit(evt.getKeyChar())) {
-            String texto = jAmount.getText().replace(".", "").replace(",", "");
+            String text = jAmount.getText().replace(".", "").replace(",", "");
 
-            if (texto.length() >= 18) {
-                texto = texto.substring(1);
-            }
+            text = text.substring(1);
+            text += evt.getKeyChar();
+            text = String.format("%017d", Long.parseLong(text));
 
-            texto += evt.getKeyChar();
-            texto = String.format("%017d", Long.parseLong(texto));
-
-            String textoFormatado = String.format("%03d.%03d.%03d.%03d.%03d,%02d",
-                    Integer.parseInt(texto.substring(0, 3)),
-                    Integer.parseInt(texto.substring(3, 6)),
-                    Integer.parseInt(texto.substring(6, 9)),
-                    Integer.parseInt(texto.substring(9, 12)),
-                    Integer.parseInt(texto.substring(12, 15)),
-                    Integer.parseInt(texto.substring(15, 17))
+            String formattedText = String.format("%03d.%03d.%03d.%03d.%03d,%02d",
+                    Integer.parseInt(text.substring(0, 3)),
+                    Integer.parseInt(text.substring(3, 6)),
+                    Integer.parseInt(text.substring(6, 9)),
+                    Integer.parseInt(text.substring(9, 12)),
+                    Integer.parseInt(text.substring(12, 15)),
+                    Integer.parseInt(text.substring(15, 17))
             );
 
-            jAmount.setText(textoFormatado);
+            jAmount.setText(formattedText);
             jAmount.setCaretPosition(jAmount.getText().length());
         }
     }//GEN-LAST:event_jAmountKeyPressed

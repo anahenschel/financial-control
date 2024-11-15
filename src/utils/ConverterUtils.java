@@ -33,7 +33,7 @@ public class ConverterUtils {
     public static double convertToAmount(String amount) throws IllegalArgumentException, NumberFormatException {
         double convertedAmount = 0;
         try {
-            String normalizedAmount = amount.replace(".", "").replace(",", ".");
+            String normalizedAmount = amount.replace(",", ".");
             convertedAmount = Double.parseDouble(normalizedAmount);
             
             if (convertedAmount <= 0) {
