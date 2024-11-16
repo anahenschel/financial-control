@@ -5,6 +5,7 @@
 package view;
 
 import enums.ExpenseCategory;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -45,7 +46,7 @@ public class AddExpenseView extends javax.swing.JFrame {
 
         return addExpenseView;
     }
-
+    
     /**
      * Inicializa a janela, configurando os dados iniciais de despesas para
      * exibição.
@@ -230,9 +231,14 @@ public class AddExpenseView extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
+        jAmount.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jAmountMouseClicked(evt);
+            }
+        });
         jAmount.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jAmountKeyPressed(evt);
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jAmountKeyReleased(evt);
             }
         });
 
@@ -356,37 +362,34 @@ public class AddExpenseView extends javax.swing.JFrame {
         saveExpense();
     }//GEN-LAST:event_jSaveExpenseMouseClicked
 
-    private void jSaveExpenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveExpenseActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jSaveExpenseActionPerformed
-
     private void jDateTimeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jDateTimeMouseClicked
         if (jDateTime.getText().equals("  /  /    ")) {
             jDateTime.setCaretPosition(0);
         }
     }//GEN-LAST:event_jDateTimeMouseClicked
 
-    private void jAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jAmountKeyPressed
-        if (Character.isDigit(evt.getKeyChar())) {
-            String text = jAmount.getText().replace(".", "").replace(",", "");
+    private void jAmountKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jAmountKeyReleased
+        try {
+            if (Character.isDigit(evt.getKeyChar())) {
+                ConverterUtils.formatAmountInput(jAmount, evt);
+            }
 
-            text = text.substring(1);
-            text += evt.getKeyChar();
-            text = String.format("%017d", Long.parseLong(text));
-
-            String formattedText = String.format("%03d.%03d.%03d.%03d.%03d,%02d",
-                    Integer.parseInt(text.substring(0, 3)),
-                    Integer.parseInt(text.substring(3, 6)),
-                    Integer.parseInt(text.substring(6, 9)),
-                    Integer.parseInt(text.substring(9, 12)),
-                    Integer.parseInt(text.substring(12, 15)),
-                    Integer.parseInt(text.substring(15, 17))
-            );
-
-            jAmount.setText(formattedText);
-            jAmount.setCaretPosition(jAmount.getText().length());
+            if (
+                evt.getKeyCode() == KeyEvent.VK_BACK_SPACE || 
+                evt.getKeyCode() == KeyEvent.VK_DELETE || 
+                evt.getKeyCode() == KeyEvent.VK_ESCAPE
+            ) {
+                String formattedText = jAmount.getText().replace(" ", "0");
+                jAmount.setText(formattedText);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao formatar o campo de valor", "Erro", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jAmountKeyPressed
+    }//GEN-LAST:event_jAmountKeyReleased
+
+    private void jAmountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAmountMouseClicked
+        jAmount.setCaretPosition(jAmount.getText().length());
+    }//GEN-LAST:event_jAmountMouseClicked
 
     /**
      * @param args the command line arguments

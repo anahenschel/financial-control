@@ -9,8 +9,6 @@ import enums.IncomeCategory;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,20 +17,6 @@ import static org.junit.Assert.*;
  * @author Nicolle
  */
 public class ConverterUtilsTest {
-
-    @Test
-    public void testWithCommaAndDot() {
-        String[] amountsText = {"10,90", "10.90"};
-        List<Double> amounts = new ArrayList<>();
-
-        for (String amountText : amountsText) {
-            amounts.add(ConverterUtils.convertToAmount(amountText));
-        }
-
-        List<Double> amountExpected = List.of(10.90, 10.90);
-
-        assertEquals(amountExpected, amounts);
-    }
 
     @Test
     public void testWhenIsLargeAmount() {

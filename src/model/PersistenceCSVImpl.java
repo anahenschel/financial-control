@@ -23,7 +23,7 @@ import java.util.List;
  * @author lhenschel
  */
 public class PersistenceCSVImpl implements PersistenceCSV {
-    public static PersistenceCSVImpl persistenceCSV;
+    private static PersistenceCSVImpl persistenceCSV;
     
     private static final String ADD_COLUMN = ";";
     private File launchFile;

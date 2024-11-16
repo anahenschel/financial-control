@@ -6,6 +6,7 @@ package utils;
 
 import enums.ExpenseCategory;
 import enums.IncomeCategory;
+import java.awt.event.KeyEvent;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
+import javax.swing.JTextField;
 
 /**
  *
@@ -33,7 +35,7 @@ public class ConverterUtils {
     public static double convertToAmount(String amount) throws IllegalArgumentException, NumberFormatException {
         double convertedAmount = 0;
         try {
-            String normalizedAmount = amount.replace(",", ".");
+            String normalizedAmount = amount.replace(".", "").replace(",", ".");
             convertedAmount = Double.parseDouble(normalizedAmount);
             
             if (convertedAmount <= 0) {
@@ -144,5 +146,36 @@ public class ConverterUtils {
      */
     private static boolean isValidDateTime(LocalDateTime dateTime) {
         return dateTime != null && !dateTime.isBefore(MIN_DATE);
+    }
+    
+    /**
+     * Formats the input of a JTextField as a currency value.
+     * 
+     * @param jAmount the JTextField where the currency input is being typed.
+     * @param evt KeyEvent triggered by the user's key press.
+     * @throws NumberFormatException if the text in the JTextField cannot be 
+     *         parsed into a numeric value.
+     */
+    public static void formatAmountInput(JTextField jAmount, KeyEvent evt) throws NumberFormatException{
+        String text = jAmount.getText().replace(".", "").replace(",", "");
+
+        if (text.length() >= 18) {
+            text = text.substring(1);
+        }
+
+        text += evt.getKeyChar();
+        text = String.format("%017d", Long.parseLong(text));
+
+        String formattedText = String.format("%03d.%03d.%03d.%03d.%03d,%02d",
+            Integer.parseInt(text.substring(0, 3)),
+            Integer.parseInt(text.substring(3, 6)),
+            Integer.parseInt(text.substring(6, 9)),
+            Integer.parseInt(text.substring(9, 12)),
+            Integer.parseInt(text.substring(12, 15)),
+            Integer.parseInt(text.substring(15, 17))
+        );
+
+        jAmount.setText(formattedText);
+        jAmount.setCaretPosition(jAmount.getText().length());
     }
 }
