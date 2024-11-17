@@ -7,6 +7,7 @@ package view;
 import enums.ExpenseCategory;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -123,8 +124,8 @@ public class AddExpenseView extends javax.swing.JFrame {
             LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDateTime.getText());
             ExpenseCategory expenseCategory = (ExpenseCategory) jExpenseCategory.getSelectedItem();
             ConverterUtils.validCategory(null, expenseCategory);
-            double amount = ConverterUtils.convertToAmount(jAmount.getText());
-            double totalBalance = FinancialControl.checkTotalBalance() - amount;
+            BigDecimal amount = ConverterUtils.convertToAmount(jAmount.getText());
+            BigDecimal totalBalance = FinancialControl.checkTotalBalance().subtract(amount);
 
             FinancialControl.createExpense(amount, expenseCategory, dateTime, totalBalance);
             JOptionPane.showMessageDialog(this, "Despesa adicionada com sucesso");

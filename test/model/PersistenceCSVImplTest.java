@@ -9,6 +9,7 @@ import enums.IncomeCategory;
 import enums.LaunchType;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +20,7 @@ import org.junit.Before;
 
 public class PersistenceCSVImplTest {
     
-    PersistenceCSVImpl persistence;
+    private PersistenceCSVImpl persistence;
 
     @Before
     public void setUp() throws IOException {
@@ -44,70 +45,71 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso2_ArquivoJaExisteNaoCriaNovamente() throws IOException {
+        String newFileName = "persistenceCSVImplTest.csv";
+        persistence.createFile("./test/files/" + newFileName);
 
-        //ignorar por enquanto 
-        persistence.createFile("./test/files/persistenceCSVImplTest.csv");
-
+        File file = persistence.getLaunchFile();
+        assertEquals(newFileName, file.getName());
     }
 
     @Test
     public void testCaso3_SalvarReceita() throws IOException {
-        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY, 0);
+        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), new BigDecimal(5000.0), IncomeCategory.SALARY, BigDecimal.ZERO);
 
         persistence.saveRegister(income, null);
         
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
-        assertEquals("INCOME;Salário;2024-11-12T10:00;5000.0;0.0", linhas.get(1));
+        assertEquals("INCOME;Salário;2024-11-12T10:00;5000;0", linhas.get(1));
     };
 
     @Test
     public void testCaso4_SalvarDespesa() throws IOException {
-        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES, 0);
+        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), new BigDecimal(1000.0), ExpenseCategory.SERVICES, BigDecimal.ZERO);
  
         persistence.saveRegister(null, expense);
 
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
-        assertEquals("EXPENSE;Serviços;2024-11-12T10:00;1000.0;0.0", linhas.get(1));
+        assertEquals("EXPENSE;Serviços;2024-11-12T10:00;1000;0", linhas.get(1));
     }
 
     @Test
     public void testCaso5_ListarTodosRegistros() throws IOException {
-        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY, 0);
-        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES, 0);
+        Income income = new Income(LocalDateTime.parse("2024-09-12T10:00:00"), new BigDecimal(5000.0), IncomeCategory.SALARY, BigDecimal.ZERO);
+        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), new BigDecimal(1000.0), ExpenseCategory.SERVICES, BigDecimal.ZERO);
 
         persistence.saveRegister(income, null);
         persistence.saveRegister(null, expense);
 
-        //validar se o primeiro registro é income e validar se o segundo é expense
-        List<Object> registros = persistence.listRegisterByType(LaunchType.ALL);
+        List<Launch> registros = FinancialControl.listReleasesOrderByDate();
+        
         assertEquals(2, registros.size());
+        assertEquals(LaunchType.EXPENSE, registros.get(0).getType());
+        assertEquals(LaunchType.INCOME, registros.get(1).getType());
     }
 
     @Test
     public void testCaso6_ListarSomenteReceitas() throws IOException {
-        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY, 0);
-        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES, 0);
+        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), new BigDecimal(5000.0), IncomeCategory.SALARY, BigDecimal.ZERO);
+        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), new BigDecimal(1000.0), ExpenseCategory.SERVICES, BigDecimal.ZERO);
 
         persistence.saveRegister(income, null);
         persistence.saveRegister(null, expense);
 
-        List<Object> registros = persistence.listRegisterByType(LaunchType.INCOME);
-        //validar se o primeiro registro é income
+        List<Income> registros = FinancialControl.listIncome();        
         assertEquals(1, registros.size());
     }
 
     @Test
     public void testCaso7_ListarSomenteDespesas() throws IOException {
-        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), 5000.0, IncomeCategory.SALARY, 0);
-        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), 1000.0, ExpenseCategory.SERVICES, 0);
+        Income income = new Income(LocalDateTime.parse("2024-11-12T10:00:00"), new BigDecimal(5000.0), IncomeCategory.SALARY, BigDecimal.ZERO);
+        Expense expense = new Expense(LocalDateTime.parse("2024-11-12T10:00:00"), new BigDecimal(1000.0), ExpenseCategory.SERVICES, BigDecimal.ZERO);
 
         persistence.saveRegister(income, null);
         persistence.saveRegister(null, expense);
 
-        //validar se o primeiro registro é expense
-        List<Object> registros = persistence.listRegisterByType(LaunchType.EXPENSE);
+        List<Expense> registros = FinancialControl.listExpense();        
         assertEquals(1, registros.size());
     }
 }

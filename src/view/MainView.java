@@ -7,6 +7,7 @@ package view;
 import enums.LaunchType;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -129,7 +130,7 @@ public class MainView extends javax.swing.JFrame {
      */
     private void loadTotalBalance() {
         try {
-            double totalBalance = FinancialControl.checkTotalBalance();
+            BigDecimal totalBalance = FinancialControl.checkTotalBalance();
             jTotalBalance.setText("Saldo total é " + ConverterUtils.formatToCurrency(totalBalance));    
         } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo total", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -142,7 +143,7 @@ public class MainView extends javax.swing.JFrame {
      */
     private void loadCurrentBalance(LocalDateTime dateTime) {
         try {
-            double currentBalance = FinancialControl.checkCurrentBalance(dateTime);
+            BigDecimal currentBalance = FinancialControl.checkCurrentBalance(dateTime);
             jBalanceResult.setText("Seu saldo é " + ConverterUtils.formatToCurrency(currentBalance));    
         } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo atual", "Erro", JOptionPane.ERROR_MESSAGE);

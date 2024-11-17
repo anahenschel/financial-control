@@ -7,6 +7,7 @@ package utils;
 import enums.ExpenseCategory;
 import enums.IncomeCategory;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,26 +30,28 @@ public class ConverterUtils {
      * Converte uma string em um valor do tipo double.
      *
      * @param amount A string representando o valor a ser convertido.
-     * @return O valor convertido para o tipo double.
+     * @return O valor convertido para o tipo BigDecimal.
      * @throws IllegalArgumentException se amount for inválido.
      */
-    public static double convertToAmount(String amount) throws IllegalArgumentException, NumberFormatException {
-        double convertedAmount = 0;
+    public static BigDecimal convertToAmount(String amount) throws IllegalArgumentException, NumberFormatException {
+        BigDecimal convertedAmount = BigDecimal.ZERO;
         try {
             String normalizedAmount = amount.replace(".", "").replace(",", ".");
-            convertedAmount = Double.parseDouble(normalizedAmount);
-            
-            if (convertedAmount <= 0) {
+            convertedAmount = new BigDecimal(normalizedAmount);
+
+            if (convertedAmount.compareTo(BigDecimal.ZERO) <= 0) {
                 throw new IllegalArgumentException("Por favor, informe um valor maior do que zero.");
             }
-            
+
             if (!isValidAmount(normalizedAmount)) {
-                throw new IllegalArgumentException("Por favor, informe um valor com até 15 caracteres antes do separador decimal e no máximo 2 caracteres após o separador");
+                throw new IllegalArgumentException(
+                    "Por favor, informe um valor com até 15 caracteres antes do separador decimal e no máximo 2 caracteres após o separador."
+                );
             }
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Por favor, informe um valor numérico válido.");
         }
-        
+
         return convertedAmount;
     }
     
@@ -111,7 +114,7 @@ public class ConverterUtils {
      * @return Uma string representando o valor formatado no padrão de moeda brasileira.
      * @throws ArithmeticException Erro ao formatar o valor
      */
-    public static String formatToCurrency(double amount) throws ArithmeticException {
+    public static String formatToCurrency(BigDecimal amount) throws ArithmeticException {
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
         return currencyFormat.format(amount);
     }

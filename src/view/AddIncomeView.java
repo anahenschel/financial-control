@@ -7,6 +7,7 @@ package view;
 import enums.IncomeCategory;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -125,8 +126,8 @@ public class AddIncomeView extends javax.swing.JFrame {
             LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDateTime.getText());
             IncomeCategory incomeCategory = (IncomeCategory) jIncomeCategory.getSelectedItem();
             ConverterUtils.validCategory(incomeCategory, null);
-            double amount = ConverterUtils.convertToAmount(jAmount.getText());
-            double totalBalance = FinancialControl.checkTotalBalance() + amount;
+            BigDecimal amount = ConverterUtils.convertToAmount(jAmount.getText());
+            BigDecimal totalBalance = FinancialControl.checkTotalBalance().add(amount);
 
             FinancialControl.createIncome(amount, incomeCategory, dateTime, totalBalance);
             JOptionPane.showMessageDialog(this, "Receita adicionada com sucesso");

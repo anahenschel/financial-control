@@ -5,6 +5,7 @@
 package model;
 
 import enums.LaunchType;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -13,9 +14,9 @@ import java.time.LocalDateTime;
  */
 public abstract class Launch {
     private LocalDateTime dateTime;
-    private double amount;
+    private BigDecimal amount;
     private LaunchType type;
-    private double totalBalance;
+    private BigDecimal totalBalance;
     
     /**
      * Construtor para a classe Launch que inicializa uma nova instância 
@@ -28,7 +29,7 @@ public abstract class Launch {
      *
      * @throws IllegalArgumentException se type for LaunchType.ALL.
      */
-    public Launch(LocalDateTime dateTime, double amount, LaunchType type, double totalBalance) {
+    public Launch(LocalDateTime dateTime, BigDecimal amount, LaunchType type, BigDecimal totalBalance) {
         this.dateTime = dateTime;
         this.amount = amount;
         this.totalBalance = totalBalance;
@@ -63,7 +64,7 @@ public abstract class Launch {
      *
      * @return O valor do lançamento.
      */
-    public double getAmount() {
+    public BigDecimal getAmount() {
 	return amount;
     }
 	
@@ -73,8 +74,8 @@ public abstract class Launch {
      * @param amount O valor do lançamento.
      * @throws IllegalArgumentException se amount for menor ou igual a zero.
      */
-    public void setAmount(double amount) {
-        if (amount <= 0) {
+    public void setAmount(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O valor não pode ser menor ou igual a zero");
         }
         
@@ -118,11 +119,11 @@ public abstract class Launch {
         this.type = type;
     }    
 
-    public double getTotalBalance() {
+    public BigDecimal getTotalBalance() {
         return totalBalance;
     }
 
-    public void setTotalBalance(double totalBalance) {
+    public void setTotalBalance(BigDecimal totalBalance) {
         this.totalBalance = totalBalance;
     }
 }

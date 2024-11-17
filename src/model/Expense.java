@@ -6,6 +6,7 @@ package model;
 
 import enums.ExpenseCategory;
 import enums.LaunchType;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -21,7 +22,7 @@ public class Expense extends Launch {
      *
      */
     public Expense() {
-        super(null, 0, LaunchType.EXPENSE, 0);
+        super(null, BigDecimal.ZERO, LaunchType.EXPENSE, BigDecimal.ZERO);
     }
 	
     /**
@@ -33,7 +34,7 @@ public class Expense extends Launch {
      * @param expenseCategory A categoria da despesa, representada pelo objeto ExpenseCategory.
      *
      */
-    public Expense(LocalDateTime dateTime, double amount, ExpenseCategory expenseCategory, double totalBalance) {
+    public Expense(LocalDateTime dateTime, BigDecimal amount, ExpenseCategory expenseCategory, BigDecimal totalBalance) {
 	super(dateTime, amount, LaunchType.EXPENSE, totalBalance);
         this.expenseCategory = expenseCategory;
     }

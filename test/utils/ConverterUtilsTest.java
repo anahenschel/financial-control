@@ -6,6 +6,7 @@ package utils;
 
 import enums.ExpenseCategory;
 import enums.IncomeCategory;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeParseException;
@@ -22,53 +23,53 @@ public class ConverterUtilsTest {
     public void testWhenIsLargeAmount() {
         String amountText = "111222333444555,99";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
 
-        assertEquals(111222333444555.99, amount, 0);
+        assertEquals(new BigDecimal("111222333444555.99"), amount);
     }
 
     @Test
     public void testConvertToAmount() {
         String amountText = "10";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
 
-        assertEquals(10, amount, 0);
+        assertEquals(new BigDecimal(amountText), amount);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWith16DigitsBeforeDecimal() {
         String amountText = "1112223334445556,99";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWith3DigitsAfterDecimal() {
         String amountText = "10,123";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test(expected = NumberFormatException.class)
     public void testWithInvalidCharacters() {
         String amountText = "*-94^^a";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWithNegativeValue() {
         String amountText = "-1";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWithZero() {
         String amountText = "0";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test
@@ -157,7 +158,7 @@ public class ConverterUtilsTest {
 
     @Test
     public void testFormatToCurrency() {
-        double amount = 0;
+        BigDecimal amount = BigDecimal.ZERO;
         String amountText = ConverterUtils.formatToCurrency(amount);
 
         assertEquals("R$ 0,00", amountText);
