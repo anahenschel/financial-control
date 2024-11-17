@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.IllegalFormatException;
 import java.util.Locale;
 import javax.swing.JTextField;
 
@@ -70,12 +71,12 @@ public class ConverterUtils {
             localDateTime = localDate.atTime(LocalTime.now());
 
             if (!isValidDateTime(localDateTime)) {
-                throw new IllegalArgumentException("A data mínima aceita é 01/01/1900. Por favor, insira uma data válida.");
+                throw new IllegalArgumentException("A data mínima aceita é 01/01/1900. Por favor, informe uma data válida.");
             }
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Por favor, informe uma data válida.");
         }
-        
+
         return localDateTime;
     }
     
@@ -130,6 +131,51 @@ public class ConverterUtils {
     }
     
     /**
+     * Formata o texto digitado em um campo de texto JTextField
+     * para que ele seja exibido no formato de valor monetário, adicionando
+     * separadores de milhar e vírgula como separador decimal. Garantindo também que
+     * não exceda a quantidade máxima de caracteres.
+     *
+     * @param jAmount O JTextField onde o valor monetário está sendo digitado.
+     * @param evt O evento de tecla KeyEvent acionado pela tecla pressionada
+     * pelo usuário.
+     * @throws NumberFormatException Se o texto no `JTextField` não puder ser
+     * analisado como um valor numérico.
+     * @throws IllegalFormatException se o valor para formatar foi inválido
+     */
+    public static String formatAmountInput(String jAmount, char keyChar) throws NumberFormatException, IllegalFormatException {
+        String text = jAmount.replace(".", "").replace(",", "");
+        
+        if (jAmount.contains(" ")) {
+            text = "0";
+            text = addLeadingZeroToAmount(text);
+        }
+
+        if (text.length() >= 18) {
+            text = text.substring(1);
+        }
+
+        text += keyChar;
+        text = addLeadingZeroToAmount(text);
+
+        return formatAmountToView(text);
+    }
+    
+    /**
+     * Adiciona zeros a esquerda ao excluir um caracter do valor
+     * 
+     * @param amountText String com o valor monetário
+     * @throws NumberFormatException se o valor númerico for inválido
+     * @throws IllegalFormatException se o valor para formatar foi inválido
+     */
+    public static String formatAmountOnDelete(String amountText) throws NumberFormatException, IllegalFormatException {
+        String textSanitized = amountText.replace(" ", "").replace(".", "").replace(",", "");
+        textSanitized = addLeadingZeroToAmount(textSanitized);
+
+        return formatAmountToView(textSanitized);
+    }
+    
+    /**
      * Verifica se a string fornecida representa um valor válido entre 1 a 15 caracteres
      * antes do separador decimal e entre 1 a 2 caracteres após o separador.
      * A string está considerando como separador decimal o ponto (.) ou virgula (,).
@@ -152,33 +198,35 @@ public class ConverterUtils {
     }
     
     /**
-     * Formats the input of a JTextField as a currency value.
+     * Transforma a String recebida no formato ###.###.###.###.###,##
      * 
-     * @param jAmount the JTextField where the currency input is being typed.
-     * @param evt KeyEvent triggered by the user's key press.
-     * @throws NumberFormatException if the text in the JTextField cannot be 
-     *         parsed into a numeric value.
+     * @param String o valor que deve ser formatado
+     * @return String formatada
+     * @throws NumberFormatException se o valor númerico for inválido
+     * @throws IllegalFormatException se o valor para formatar foi inválido
      */
-    public static void formatAmountInput(JTextField jAmount, KeyEvent evt) throws NumberFormatException{
-        String text = jAmount.getText().replace(".", "").replace(",", "");
+    private static String formatAmountToView(String amountWithoutFormat) throws NumberFormatException, IllegalFormatException {
+        String formattedAmount = "";
 
-        if (text.length() >= 18) {
-            text = text.substring(1);
-        }
-
-        text += evt.getKeyChar();
-        text = String.format("%017d", Long.parseLong(text));
-
-        String formattedText = String.format("%03d.%03d.%03d.%03d.%03d,%02d",
-            Integer.parseInt(text.substring(0, 3)),
-            Integer.parseInt(text.substring(3, 6)),
-            Integer.parseInt(text.substring(6, 9)),
-            Integer.parseInt(text.substring(9, 12)),
-            Integer.parseInt(text.substring(12, 15)),
-            Integer.parseInt(text.substring(15, 17))
-        );
-
-        jAmount.setText(formattedText);
-        jAmount.setCaretPosition(jAmount.getText().length());
+        return formattedAmount = String.format("%03d.%03d.%03d.%03d.%03d,%02d",
+                Integer.parseInt(amountWithoutFormat.substring(0, 3)),
+                Integer.parseInt(amountWithoutFormat.substring(3, 6)),
+                Integer.parseInt(amountWithoutFormat.substring(6, 9)),
+                Integer.parseInt(amountWithoutFormat.substring(9, 12)),
+                Integer.parseInt(amountWithoutFormat.substring(12, 15)),
+                Integer.parseInt(amountWithoutFormat.substring(15, 17)));
+    }
+    
+    /**
+     * Adiciona zeros à esquerda de um valor numérico, se necessário, para garantir que ele
+     * tenha exatamente 17 dígitos
+     *
+     * @param amount O valor numérico como uma String
+     * @throws NumberFormatException se o valor númerico for inválido
+     * @throws IllegalFormatException se o valor para formatar foi inválido
+     */
+    private static String addLeadingZeroToAmount(String amount) throws NumberFormatException, IllegalFormatException {
+        amount = amount.isBlank() ? "0" : amount;
+        return amount = String.format("%017d", Long.parseLong(amount));
     }
 }

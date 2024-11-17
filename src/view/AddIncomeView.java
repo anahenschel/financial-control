@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.IllegalFormatException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -374,7 +375,10 @@ public class AddIncomeView extends javax.swing.JFrame {
     private void jAmountKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jAmountKeyReleased
         try {
             if (Character.isDigit(evt.getKeyChar())) {
-                ConverterUtils.formatAmountInput(jAmount, evt);
+                String formattedText = ConverterUtils.formatAmountInput(jAmount.getText(), evt.getKeyChar());  
+                
+                jAmount.setText(formattedText);
+                jAmount.setCaretPosition(jAmount.getText().length());
             }
 
             if (
@@ -382,10 +386,12 @@ public class AddIncomeView extends javax.swing.JFrame {
                 evt.getKeyCode() == KeyEvent.VK_DELETE || 
                 evt.getKeyCode() == KeyEvent.VK_ESCAPE
             ) {
-                String formattedText = jAmount.getText().replace(" ", "0");
+                String formattedText = ConverterUtils.formatAmountOnDelete(jAmount.getText());
+                
                 jAmount.setText(formattedText);
+                jAmount.setCaretPosition(jAmount.getText().length());
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException | IllegalFormatException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o campo de valor", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jAmountKeyReleased
