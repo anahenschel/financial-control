@@ -7,6 +7,7 @@ package model;
 import enums.ExpenseCategory;
 import enums.IncomeCategory;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
@@ -26,7 +27,7 @@ public class FinancialControlTest {
     @Before
     public void setUp() throws IOException {
         persistence = PersistenceCSVImpl.getPersistenceCSVImpl();
-        persistence.createFile("./test/files/financialControlTest.csv");
+        persistence.createFile("./test/model/financialControlTest.csv");
     }
 
     @After
@@ -36,19 +37,19 @@ public class FinancialControlTest {
 
     @Test
     public void testCreateIncome() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));
+        FinancialControl.createIncome(new BigDecimal(10), IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), BigDecimal.ZERO);
     }
 
 
     @Test
     public void testCreateExpense() throws IOException {      
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createExpense(new BigDecimal(15), ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), BigDecimal.ZERO);
     }
 
     @Test
     public void testListIncome() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(new BigDecimal(10), IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), BigDecimal.ZERO);        
+        FinancialControl.createExpense(new BigDecimal(15), ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), BigDecimal.ZERO);
         
         List<Income> listIncomes = FinancialControl.listIncome();
         
@@ -58,8 +59,8 @@ public class FinancialControlTest {
 
     @Test
     public void testListExpense() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(new BigDecimal(10), IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), BigDecimal.ZERO);        
+        FinancialControl.createExpense(new BigDecimal(15), ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), BigDecimal.ZERO);
         
         List<Expense> listExpenses = FinancialControl.listExpense();
         
@@ -69,8 +70,8 @@ public class FinancialControlTest {
 
     @Test
     public void testListReleasesByDate() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(new BigDecimal(10), IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), BigDecimal.ZERO);        
+        FinancialControl.createExpense(new BigDecimal(15), ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), BigDecimal.ZERO);
         
         List<Launch> listLaunches = FinancialControl.listReleasesOrderByDate();
         
@@ -80,19 +81,19 @@ public class FinancialControlTest {
 
     @Test
     public void testCheckCurrentBalance() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(new BigDecimal(10), IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), BigDecimal.ZERO);        
+        FinancialControl.createExpense(new BigDecimal(15), ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), BigDecimal.ZERO);
         
         LocalDateTime dateTime = LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0);
         
-        assertEquals(10, FinancialControl.checkCurrentBalance(dateTime), 0);
+        assertEquals(new BigDecimal(10), FinancialControl.checkCurrentBalance(dateTime));
     }
 
     @Test
     public void testCheckTotalBalance() throws IOException {
-        FinancialControl.createIncome(10, IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0));        
-        FinancialControl.createExpense(15, ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0));
+        FinancialControl.createIncome(new BigDecimal(10), IncomeCategory.OTHER_INCOME, LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0, 0), BigDecimal.ZERO);        
+        FinancialControl.createExpense(new BigDecimal(15), ExpenseCategory.OTHER_EXPENSE, LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0, 0), BigDecimal.ZERO);
         
-        assertEquals(-5, FinancialControl.checkTotalBalance(), 0);
+        assertEquals(new BigDecimal(-5), FinancialControl.checkTotalBalance());
     }
 }
