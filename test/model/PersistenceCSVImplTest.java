@@ -25,7 +25,7 @@ public class PersistenceCSVImplTest {
     @Before
     public void setUp() throws IOException {
         persistence = PersistenceCSVImpl.getPersistenceCSVImpl();
-        persistence.createFile("./test/files/persistenceCSVImplTest.csv");
+        persistence.createFile("./test/model/persistenceCSVImplTest.csv");
     }
 
     @After
@@ -35,7 +35,7 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso1_CriarArquivoComCabecalho() throws IOException {
-        persistence.createFile("./test/files/createFileTest.csv");
+        persistence.createFile("./test/model/createFileTest.csv");
         
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
@@ -46,7 +46,7 @@ public class PersistenceCSVImplTest {
     @Test
     public void testCaso2_ArquivoJaExisteNaoCriaNovamente() throws IOException {
         String newFileName = "persistenceCSVImplTest.csv";
-        persistence.createFile("./test/files/" + newFileName);
+        persistence.createFile("./test/model/" + newFileName);
 
         File file = persistence.getLaunchFile();
         assertEquals(newFileName, file.getName());

@@ -27,7 +27,7 @@ public class FinancialControlTest {
     @Before
     public void setUp() throws IOException {
         persistence = PersistenceCSVImpl.getPersistenceCSVImpl();
-        persistence.createFile("./test/files/financialControlTest.csv");
+        persistence.createFile("./test/model/financialControlTest.csv");
     }
 
     @After
