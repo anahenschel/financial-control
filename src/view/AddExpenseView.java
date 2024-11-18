@@ -125,7 +125,7 @@ public class AddExpenseView extends javax.swing.JFrame {
             ExpenseCategory expenseCategory = (ExpenseCategory) jExpenseCategory.getSelectedItem();
             ConverterUtils.validCategory(null, expenseCategory);
             BigDecimal amount = ConverterUtils.convertToAmount(jAmount.getText());
-            BigDecimal totalBalance = FinancialControl.checkTotalBalance().subtract(amount);
+            BigDecimal totalBalance = FinancialControl.checkCurrentBalance(dateTime).subtract(amount);
 
             FinancialControl.createExpense(amount, expenseCategory, dateTime, totalBalance);
             JOptionPane.showMessageDialog(this, "Despesa adicionada com sucesso");

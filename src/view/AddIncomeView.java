@@ -127,7 +127,7 @@ public class AddIncomeView extends javax.swing.JFrame {
             IncomeCategory incomeCategory = (IncomeCategory) jIncomeCategory.getSelectedItem();
             ConverterUtils.validCategory(incomeCategory, null);
             BigDecimal amount = ConverterUtils.convertToAmount(jAmount.getText());
-            BigDecimal totalBalance = FinancialControl.checkTotalBalance().add(amount);
+            BigDecimal totalBalance = FinancialControl.checkCurrentBalance(dateTime).add(amount);
 
             FinancialControl.createIncome(amount, incomeCategory, dateTime, totalBalance);
             JOptionPane.showMessageDialog(this, "Receita adicionada com sucesso");
