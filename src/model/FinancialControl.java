@@ -8,6 +8,7 @@ import enums.ExpenseCategory;
 import enums.IncomeCategory;
 import enums.LaunchType;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,14 +30,16 @@ public class FinancialControl {
      * @param amount O valor da receita
      * @param incomeCategory A categoria da receita
      * @param dateTime A data e hora da receita
+     * @param totalBalance
      * @throws java.io.IOException
      */
-    public static void createIncome(double amount, IncomeCategory incomeCategory, LocalDateTime dateTime) throws IOException {
+    public static void createIncome(BigDecimal amount, IncomeCategory incomeCategory, LocalDateTime dateTime, BigDecimal totalBalance) throws IOException {
         Income income = new Income();
         income.setDateTime(dateTime);
         income.setAmount(amount);
         income.setIncomeCategory(incomeCategory);
-
+        income.setTotalBalance(totalBalance);
+        
         persistenceCSVImpl.saveRegister(income, null);
     }
 
@@ -46,14 +49,16 @@ public class FinancialControl {
      * @param amount O valor da despesa
      * @param expenseCategory A categoria da despesa
      * @param dateTime A data e hora da despesa
+     * @param totalBalance
      * @throws java.io.IOException
      */
-    public static void createExpense(double amount, ExpenseCategory expenseCategory, LocalDateTime dateTime) throws IOException {
+    public static void createExpense(BigDecimal amount, ExpenseCategory expenseCategory, LocalDateTime dateTime, BigDecimal totalBalance) throws IOException {
         Expense expense = new Expense();
         expense.setDateTime(dateTime);
         expense.setAmount(amount);
         expense.setExpenseCategory(expenseCategory);
-
+        expense.setTotalBalance(totalBalance);
+        
         persistenceCSVImpl.saveRegister(null, expense);
     }
 
@@ -72,10 +77,11 @@ public class FinancialControl {
             for (Object register : listRegisters) {
                 if (register instanceof String[] columns) {
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
-                    double amount = Double.parseDouble(columns[3]);
+                    BigDecimal amount = new BigDecimal(columns[3]);
+                    BigDecimal totalBalance = new BigDecimal(columns[4]);
 
                     IncomeCategory incomeCategory = IncomeCategory.fromDescription(columns[1]);
-                    Income income = new Income(localDateTime, amount, incomeCategory);
+                    Income income = new Income(localDateTime, amount, incomeCategory, totalBalance);
 
                     listIncome.add(income);
                 }
@@ -103,10 +109,11 @@ public class FinancialControl {
             for (Object register : listRegisters) {
                 if (register instanceof String[] columns) {
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
-                    double amount = Double.parseDouble(columns[3]);
-
+                    BigDecimal amount = new BigDecimal(columns[3]);
+                    BigDecimal totalBalance = new BigDecimal(columns[4]);
+                    
                     ExpenseCategory expenseCategory = ExpenseCategory.fromDescription(columns[1]);
-                    Expense expense = new Expense(localDateTime, amount, expenseCategory);
+                    Expense expense = new Expense(localDateTime, amount, expenseCategory, totalBalance);
 
                     listExpense.add(expense);
                 }
@@ -137,15 +144,16 @@ public class FinancialControl {
                 if (register instanceof String[] columns) {
                     LaunchType launchType = LaunchType.valueOf(columns[0]);
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
-                    double amount = Double.parseDouble(columns[3]);
+                    BigDecimal amount = new BigDecimal(columns[3]);
+                    BigDecimal totalBalance = new BigDecimal(columns[4]);
 
                     Launch launch;
                     if (launchType == LaunchType.INCOME) {
                         IncomeCategory incomeCategory = IncomeCategory.fromDescription(columns[1]);
-                        launch = new Income(localDateTime, amount, incomeCategory);
+                        launch = new Income(localDateTime, amount, incomeCategory, totalBalance);
                     } else if (launchType == LaunchType.EXPENSE) {
                         ExpenseCategory expenseCategory = ExpenseCategory.fromDescription(columns[1]);
-                        launch = new Expense(localDateTime, amount, expenseCategory);
+                        launch = new Expense(localDateTime, amount, expenseCategory, totalBalance);
                     } else {
                         continue;
                     }
@@ -170,21 +178,21 @@ public class FinancialControl {
      * especificada.
      * @throws java.io.IOException
      */
-    public static double checkCurrentBalance(LocalDateTime dateTime) throws IOException {
-        double currentBalance = 0;
+    public static BigDecimal checkCurrentBalance(LocalDateTime dateTime) throws IOException {
+        BigDecimal currentBalance = BigDecimal.ZERO;
 
         try {
             List<Launch> listReleases = listReleasesOrderByDate();
 
             List<Launch> filteredReleases = listReleases.stream()
-                    .filter(launch -> !launch.getDateTime().toLocalDate().isAfter(dateTime.toLocalDate()))
-                    .collect(Collectors.toList());
+                .filter(launch -> !launch.getDateTime().toLocalDate().isAfter(dateTime.toLocalDate()))
+                .collect(Collectors.toList());
 
             for (Launch launch : filteredReleases) {
                 if (launch.getType() == LaunchType.EXPENSE) {
-                    currentBalance -= launch.getAmount();
+                    currentBalance = currentBalance.subtract(launch.getAmount());
                 } else if (launch.getType() == LaunchType.INCOME) {
-                    currentBalance += launch.getAmount();
+                    currentBalance = currentBalance.add(launch.getAmount());
                 }
             }
         } catch (IOException ex) {
@@ -200,17 +208,17 @@ public class FinancialControl {
      * @return O saldo total acumulado como um valor double.
      * @throws java.io.IOException
      */
-    public static double checkTotalBalance() throws IOException {
-        double totalBalance = 0;
+    public static BigDecimal checkTotalBalance() throws IOException {
+        BigDecimal totalBalance = BigDecimal.ZERO;
 
         try {
             List<Launch> listReleases = listReleasesOrderByDate();
 
             for (Launch launch : listReleases) {
                 if (launch.getType() == LaunchType.EXPENSE) {
-                    totalBalance -= launch.getAmount();
+                    totalBalance = totalBalance.subtract(launch.getAmount());
                 } else if (launch.getType() == LaunchType.INCOME) {
-                    totalBalance += launch.getAmount();
+                    totalBalance = totalBalance.add(launch.getAmount());
                 }
             }
         } catch (IOException ex) {

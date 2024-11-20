@@ -7,6 +7,7 @@ package view;
 import enums.LaunchType;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -82,6 +83,7 @@ public class MainView extends javax.swing.JFrame {
             tableModel.addColumn("Data");
             tableModel.addColumn("Tipo Lançamento");
             tableModel.addColumn("Categoria");
+            tableModel.addColumn("Saldo total");
             
             jReleasesByDateTable.setRowHeight(35);
                         
@@ -105,6 +107,7 @@ public class MainView extends javax.swing.JFrame {
                     ConverterUtils.formatToDate(launch.getDateTime()),
                     launch.getTypeToString(),
                     category,
+                    ConverterUtils.formatToCurrency(launch.getTotalBalance()),
                 };
                 
                 tableModel.addRow(row);
@@ -127,7 +130,7 @@ public class MainView extends javax.swing.JFrame {
      */
     private void loadTotalBalance() {
         try {
-            double totalBalance = FinancialControl.checkTotalBalance();
+            BigDecimal totalBalance = FinancialControl.checkTotalBalance();
             jTotalBalance.setText("Saldo total é " + ConverterUtils.formatToCurrency(totalBalance));    
         } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo total", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -140,7 +143,7 @@ public class MainView extends javax.swing.JFrame {
      */
     private void loadCurrentBalance(LocalDateTime dateTime) {
         try {
-            double currentBalance = FinancialControl.checkCurrentBalance(dateTime);
+            BigDecimal currentBalance = FinancialControl.checkCurrentBalance(dateTime);
             jBalanceResult.setText("Seu saldo é " + ConverterUtils.formatToCurrency(currentBalance));    
         } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo atual", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -340,7 +343,7 @@ public class MainView extends javax.swing.JFrame {
             .addGroup(jMainLayout.createSequentialGroup()
                 .addContainerGap(66, Short.MAX_VALUE)
                 .addComponent(jIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(100, 100, 100)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                 .addComponent(jExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
                 .addComponent(jCheckBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -363,7 +366,7 @@ public class MainView extends javax.swing.JFrame {
                     .addComponent(jExpense, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jCheckBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(44, 44, 44)
+                .addGap(45, 45, 45)
                 .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jReleasesByDateTitle)
                     .addComponent(jTotalBalance))

@@ -5,9 +5,12 @@
 package view;
 
 import enums.IncomeCategory;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.IllegalFormatException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -124,9 +127,10 @@ public class AddIncomeView extends javax.swing.JFrame {
             LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDateTime.getText());
             IncomeCategory incomeCategory = (IncomeCategory) jIncomeCategory.getSelectedItem();
             ConverterUtils.validCategory(incomeCategory, null);
-            double amount = ConverterUtils.convertToAmount(jAmount.getText());
+            BigDecimal amount = ConverterUtils.convertToAmount(jAmount.getText());
+            BigDecimal totalBalance = FinancialControl.checkCurrentBalance(dateTime).add(amount);
 
-            FinancialControl.createIncome(amount, incomeCategory, dateTime);
+            FinancialControl.createIncome(amount, incomeCategory, dateTime, totalBalance);
             JOptionPane.showMessageDialog(this, "Receita adicionada com sucesso");
 
             listIncome();
@@ -143,7 +147,7 @@ public class AddIncomeView extends javax.swing.JFrame {
     private void resetInteractions() {
         jDateTime.setText("");
         jIncomeCategory.setSelectedIndex(0);
-        jAmount.setText("");
+        jAmount.setText("000000000000000000");
     }
 
     /**
@@ -164,13 +168,15 @@ public class AddIncomeView extends javax.swing.JFrame {
         jDateTime = new javax.swing.JFormattedTextField();
         jDateTimeLabel = new javax.swing.JLabel();
         jAmountLabel = new javax.swing.JLabel();
-        jAmount = new javax.swing.JTextField();
         jIncomeCategoryLabel = new javax.swing.JLabel();
         jIncomeCategory = new javax.swing.JComboBox<>();
         jSaveIncome = new javax.swing.JToggleButton();
         jBackWindow = new javax.swing.JToggleButton();
+        jAmount = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jMain.setPreferredSize(new java.awt.Dimension(1030, 737));
 
         jIncomeTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jIncomeTitle.setText("Receitas");
@@ -193,12 +199,15 @@ public class AddIncomeView extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         jDateTime.setPreferredSize(new java.awt.Dimension(300, 40));
+        jDateTime.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jDateTimeMouseClicked(evt);
+            }
+        });
 
         jDateTimeLabel.setText("Data do lançamento");
 
         jAmountLabel.setText("Valor");
-
-        jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
 
         jIncomeCategoryLabel.setText("Tipo de receita");
 
@@ -212,11 +221,6 @@ public class AddIncomeView extends javax.swing.JFrame {
                 jSaveIncomeMouseClicked(evt);
             }
         });
-        jSaveIncome.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jSaveIncomeActionPerformed(evt);
-            }
-        });
 
         jBackWindow.setText("Voltar");
         jBackWindow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -226,9 +230,21 @@ public class AddIncomeView extends javax.swing.JFrame {
                 jBackWindowMouseClicked(evt);
             }
         });
-        jBackWindow.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBackWindowActionPerformed(evt);
+
+        try {
+            jAmount.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("###.###.###.###.###,##")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        jAmount.setPreferredSize(new java.awt.Dimension(300, 40));
+        jAmount.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jAmountMouseClicked(evt);
+            }
+        });
+        jAmount.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jAmountKeyReleased(evt);
             }
         });
 
@@ -273,7 +289,7 @@ public class AddIncomeView extends javax.swing.JFrame {
                 .addComponent(jAmountLabel)
                 .addGap(5, 5, 5)
                 .addComponent(jAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addGap(40, 40, 40)
                 .addGroup(jIncomeFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSaveIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBackWindow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -316,10 +332,10 @@ public class AddIncomeView extends javax.swing.JFrame {
             .addGroup(jMainLayout.createSequentialGroup()
                 .addGap(45, 45, 45)
                 .addComponent(jIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addGap(45, 45, 45)
                 .addComponent(jIncomeTitle)
                 .addGap(10, 10, 10)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addGap(45, 45, 45))
         );
 
@@ -327,15 +343,13 @@ public class AddIncomeView extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+            .addComponent(jMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addComponent(jMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -352,13 +366,39 @@ public class AddIncomeView extends javax.swing.JFrame {
         saveIncome();
     }//GEN-LAST:event_jSaveIncomeMouseClicked
 
-    private void jBackWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBackWindowActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jBackWindowActionPerformed
+    private void jDateTimeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jDateTimeMouseClicked
+        if (jDateTime.getText().equals("  /  /    ")) {
+            jDateTime.setCaretPosition(0);
+        }
+    }//GEN-LAST:event_jDateTimeMouseClicked
 
-    private void jSaveIncomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveIncomeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jSaveIncomeActionPerformed
+    private void jAmountKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jAmountKeyReleased
+        try {
+            if (Character.isDigit(evt.getKeyChar())) {
+                String formattedText = ConverterUtils.formatAmountInput(jAmount.getText(), evt.getKeyChar());  
+                
+                jAmount.setText(formattedText);
+                jAmount.setCaretPosition(jAmount.getText().length());
+            }
+
+            if (
+                evt.getKeyCode() == KeyEvent.VK_BACK_SPACE || 
+                evt.getKeyCode() == KeyEvent.VK_DELETE || 
+                evt.getKeyCode() == KeyEvent.VK_ESCAPE
+            ) {
+                String formattedText = ConverterUtils.formatAmountOnDelete(jAmount.getText());
+                
+                jAmount.setText(formattedText);
+                jAmount.setCaretPosition(jAmount.getText().length());
+            }
+        } catch (NumberFormatException | IllegalFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao formatar o campo de valor", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jAmountKeyReleased
+
+    private void jAmountMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jAmountMouseClicked
+        jAmount.setCaretPosition(jAmount.getText().length());
+    }//GEN-LAST:event_jAmountMouseClicked
 
     /**
      * @param args the command line arguments
@@ -396,7 +436,7 @@ public class AddIncomeView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField jAmount;
+    private javax.swing.JFormattedTextField jAmount;
     private javax.swing.JLabel jAmountLabel;
     private javax.swing.JToggleButton jBackWindow;
     private javax.swing.JFormattedTextField jDateTime;

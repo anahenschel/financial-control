@@ -23,23 +23,25 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <Component id="jMain" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-          </Group>
+          <Component id="jMain" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jMain" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+              <Component id="jMain" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
     <Container class="javax.swing.JPanel" name="jMain">
+      <Properties>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[1030, 737]"/>
+        </Property>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -63,10 +65,10 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                   <Component id="jIncome" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                   <Component id="jIncomeTitle" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" min="-2" pref="260" max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" pref="267" max="32767" attributes="0"/>
                   <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -180,7 +182,7 @@
                           <Component id="jAmountLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                           <Component id="jAmount" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jSaveIncome" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jBackWindow" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -200,6 +202,9 @@
                       <Dimension value="[300, 40]"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jDateTimeMouseClicked"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jDateTimeLabel">
                   <Properties>
@@ -209,13 +214,6 @@
                 <Component class="javax.swing.JLabel" name="jAmountLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Valor"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="jAmount">
-                  <Properties>
-                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[300, 40]"/>
-                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jIncomeCategoryLabel">
@@ -262,6 +260,20 @@
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jBackWindowMouseClicked"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JFormattedTextField" name="jAmount">
+                  <Properties>
+                    <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor" preCode="try {" postCode="} catch (java.text.ParseException ex) {&#xa;ex.printStackTrace();&#xa;}">
+                      <Format format="###.###.###.###.###,##" subtype="-1" type="5"/>
+                    </Property>
+                    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[300, 40]"/>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jAmountMouseClicked"/>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jAmountKeyReleased"/>
                   </Events>
                 </Component>
               </SubComponents>
