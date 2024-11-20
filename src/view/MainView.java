@@ -9,7 +9,9 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
@@ -54,10 +56,15 @@ public class MainView extends javax.swing.JFrame {
      * Método responsável para iniciar junto com a janela
      *
      */
-    public void screen() {
+    public void screen() {        
         loadRelasesByDateTable();
         loadTotalBalance();
-        loadCurrentBalance(LocalDateTime.now());
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate localDate = LocalDate.parse(jDate.getText(), formatter);
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+
+        loadCurrentBalance(localDateTime);
     }
     
     /**

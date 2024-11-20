@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  *
  * @author nponcio
  */
-public abstract class Launch {
+public abstract class Launch implements Comparable<Launch> {
     private LocalDateTime dateTime;
     private BigDecimal amount;
     private LaunchType type;
@@ -125,5 +125,10 @@ public abstract class Launch {
 
     public void setTotalBalance(BigDecimal totalBalance) {
         this.totalBalance = totalBalance;
+    }
+
+    @Override
+    public int compareTo(Launch launch) {
+       return launch.dateTime.compareTo(this.dateTime);
     }
 }
