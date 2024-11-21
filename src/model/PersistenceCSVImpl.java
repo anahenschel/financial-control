@@ -110,6 +110,11 @@ public class PersistenceCSVImpl implements PersistenceCSV {
         return listRegister;
     }
 
+    /**
+     * Recupera o arquivo.
+     *
+     * @return o objeto File.
+     */
     public File getLaunchFile() {
         return launchFile;
     }

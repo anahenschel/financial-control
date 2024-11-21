@@ -59,12 +59,7 @@ public class MainView extends javax.swing.JFrame {
     public void screen() {        
         loadRelasesByDateTable();
         loadTotalBalance();
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate localDate = LocalDate.parse(jDate.getText(), formatter);
-        LocalDateTime localDateTime = localDate.atStartOfDay();
-
-        loadCurrentBalance(localDateTime);
+        loadCurrentBalance(getLocalDateByJDate());
     }
     
     /**
@@ -76,6 +71,24 @@ public class MainView extends javax.swing.JFrame {
         String currentDate = sdf.format(new Date());
         
         jDate.setText(currentDate);
+    }
+    
+    /**
+     * Converte o texto de um campo jDate em um objeto LocalDateTime.
+     * 
+     * @return um LocalDateTime representando a data
+     */
+    private LocalDateTime getLocalDateByJDate() {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate localDate = LocalDate.parse(jDate.getText(), formatter);
+
+            return localDate.atStartOfDay();
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao formatar a data", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return null;
     }
     
     /**

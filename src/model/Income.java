@@ -32,6 +32,7 @@ public class Income extends Launch {
      * @param dateTime A data e hora da receita, representada por um objeto LocalDateTime.
      * @param amount O valor da receita.
      * @param incomeCategory A categoria da receita, representada por um objeto IncomeCategory.
+     * @param totalBalance Saldo total quando foi realizada a transação
      *
      */
     public Income(LocalDateTime dateTime, BigDecimal amount, IncomeCategory incomeCategory, BigDecimal totalBalance) {
@@ -50,7 +51,6 @@ public class Income extends Launch {
 
     /**
      * Define a categoria da receita para esta instância do Income.
-     *
      *
      * @param incomeCategory A categoria da receita, representada por um objeto IncomeCategory.
      * @throws IllegalArgumentException se incomeCategory for null ou igual a IncomeCategory.DEFAULT.
