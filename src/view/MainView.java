@@ -108,18 +108,19 @@ public class MainView extends javax.swing.JFrame {
             jReleasesByDateTable.setRowHeight(35);
                         
             List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
-            int amountExpense = 0;
-            int amountIncome = 0;
+            long amountIncome = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.INCOME)).count();
+            long amountExpense = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.EXPENSE)).count();
+            BigDecimal runningBalance = BigDecimal.ZERO;
             
             for (Launch launch : listLauchByFilter) {
                 String category = "";
                 
                 if (launch.getType().equals(LaunchType.EXPENSE)) {
                     category = ((Expense) launch).getExpenseCategory().toString();
-                    amountExpense++;
+                    runningBalance = runningBalance.subtract(launch.getAmount());
                 } else if (launch.getType().equals(LaunchType.INCOME)) {
                     category = ((Income) launch).getIncomeCategory().toString();
-                    amountIncome++;
+                    runningBalance = runningBalance.add(launch.getAmount());
                 }
                 
                 Object[] row = {
@@ -127,7 +128,7 @@ public class MainView extends javax.swing.JFrame {
                     ConverterUtils.formatToDate(launch.getDateTime()),
                     launch.getTypeToString(),
                     category,
-                    ConverterUtils.formatToCurrency(launch.getTotalBalance()),
+                    ConverterUtils.formatToCurrency(runningBalance),
                 };
                 
                 tableModel.addRow(row);
