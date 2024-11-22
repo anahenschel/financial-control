@@ -13,6 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -108,9 +111,13 @@ public class MainView extends javax.swing.JFrame {
             jReleasesByDateTable.setRowHeight(35);
                         
             List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
+            listLauchByFilter.sort(Comparator.comparing(Launch::getDateTime));
+            
             long amountIncome = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.INCOME)).count();
             long amountExpense = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.EXPENSE)).count();
+            
             BigDecimal runningBalance = BigDecimal.ZERO;
+            List<Object[]> rows = new ArrayList<>();
             
             for (Launch launch : listLauchByFilter) {
                 String category = "";
@@ -131,6 +138,12 @@ public class MainView extends javax.swing.JFrame {
                     ConverterUtils.formatToCurrency(runningBalance),
                 };
                 
+                rows.add(row);
+            }
+            
+            Collections.reverse(rows);
+
+            for (Object[] row : rows) {
                 tableModel.addRow(row);
             }
             
