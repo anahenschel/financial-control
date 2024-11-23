@@ -20,9 +20,10 @@ public interface PersistenceCSV {
      * Cria um arquivo para armazenar os registros financeiros.
      * Lança uma exceção caso ocorra um erro durante a criação do arquivo.
      * 
+     * @param file Nome do arquivo
      * @throws IOException
      */
-    public void createFile() throws IOException;
+    public void createFile(String file) throws IOException;
     
     /**
      * Salva um novo registro de receitas ou despesas no arquivo.

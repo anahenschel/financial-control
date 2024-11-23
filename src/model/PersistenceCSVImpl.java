@@ -23,14 +23,13 @@ import java.util.List;
  * @author lhenschel
  */
 public class PersistenceCSVImpl implements PersistenceCSV {
-    public static PersistenceCSVImpl persistenceCSV;
+    private static PersistenceCSVImpl persistenceCSV;
     
     private static final String ADD_COLUMN = ";";
     private File launchFile;
     
     /**
      * Retorna uma instância única de PersistenceCSVImpl.
-     * 
      *
      * @return A instância única de PersistenceCSVImpl.
      */
@@ -43,12 +42,12 @@ public class PersistenceCSVImpl implements PersistenceCSV {
     }
     
     @Override
-    public void createFile() throws IOException {
-        launchFile = new File("launch.csv");
+    public void createFile(String file) throws IOException {
+        launchFile = new File(file);
 
         if (!launchFile.exists()) {
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(launchFile), "UTF-8"))) {
-                String[] headers = {"launchType", "category", "dateTime", "amount"};
+                String[] headers = {"launchType", "category", "dateTime", "amount", "totalBalance"};
                 writer.write(String.join(ADD_COLUMN, headers));
                 writer.newLine();
             } catch (IOException ex) {
@@ -66,12 +65,14 @@ public class PersistenceCSVImpl implements PersistenceCSV {
                 data.append(income.getType()).append(ADD_COLUMN);
                 data.append(income.getIncomeCategory()).append(ADD_COLUMN);
                 data.append(income.getDateTime().toString()).append(ADD_COLUMN);
-                data.append(income.getAmount());
+                data.append(income.getAmount()).append(ADD_COLUMN);
+                data.append(income.getTotalBalance());
             } else if (expense != null) {
                 data.append(expense.getType()).append(ADD_COLUMN);
                 data.append(expense.getExpenseCategory()).append(ADD_COLUMN);
                 data.append(expense.getDateTime().toString()).append(ADD_COLUMN);
-                data.append(expense.getAmount());
+                data.append(expense.getAmount()).append(ADD_COLUMN);
+                data.append(expense.getTotalBalance());
             }
             
             writer.println(data.toString());
@@ -107,5 +108,14 @@ public class PersistenceCSVImpl implements PersistenceCSV {
         }
         
         return listRegister;
+    }
+
+    /**
+     * Recupera o arquivo.
+     *
+     * @return o objeto File.
+     */
+    public File getLaunchFile() {
+        return launchFile;
     }
 }

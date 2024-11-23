@@ -7,9 +7,15 @@ package view;
 import enums.LaunchType;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -53,10 +59,10 @@ public class MainView extends javax.swing.JFrame {
      * Método responsável para iniciar junto com a janela
      *
      */
-    public void screen() {
+    public void screen() {        
         loadRelasesByDateTable();
         loadTotalBalance();
-        loadCurrentBalance(LocalDateTime.now());
+        loadCurrentBalance(getLocalDateByJDate());
     }
     
     /**
@@ -71,6 +77,24 @@ public class MainView extends javax.swing.JFrame {
     }
     
     /**
+     * Converte o texto de um campo jDate em um objeto LocalDateTime.
+     * 
+     * @return um LocalDateTime representando a data
+     */
+    private LocalDateTime getLocalDateByJDate() {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate localDate = LocalDate.parse(jDate.getText(), formatter);
+
+            return localDate.atStartOfDay();
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao formatar a data", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return null;
+    }
+    
+    /**
      * Carrega as colunas e os resultados na tabela
      *
      */
@@ -82,22 +106,28 @@ public class MainView extends javax.swing.JFrame {
             tableModel.addColumn("Data");
             tableModel.addColumn("Tipo Lançamento");
             tableModel.addColumn("Categoria");
+            tableModel.addColumn("Saldo total");
             
             jReleasesByDateTable.setRowHeight(35);
                         
             List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
-            int amountExpense = 0;
-            int amountIncome = 0;
+            listLauchByFilter.sort(Comparator.comparing(Launch::getDateTime));
+            
+            long amountIncome = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.INCOME)).count();
+            long amountExpense = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.EXPENSE)).count();
+            
+            BigDecimal runningBalance = BigDecimal.ZERO;
+            List<Object[]> rows = new ArrayList<>();
             
             for (Launch launch : listLauchByFilter) {
                 String category = "";
                 
                 if (launch.getType().equals(LaunchType.EXPENSE)) {
                     category = ((Expense) launch).getExpenseCategory().toString();
-                    amountExpense++;
+                    runningBalance = runningBalance.subtract(launch.getAmount());
                 } else if (launch.getType().equals(LaunchType.INCOME)) {
                     category = ((Income) launch).getIncomeCategory().toString();
-                    amountIncome++;
+                    runningBalance = runningBalance.add(launch.getAmount());
                 }
                 
                 Object[] row = {
@@ -105,8 +135,15 @@ public class MainView extends javax.swing.JFrame {
                     ConverterUtils.formatToDate(launch.getDateTime()),
                     launch.getTypeToString(),
                     category,
+                    ConverterUtils.formatToCurrency(runningBalance),
                 };
                 
+                rows.add(row);
+            }
+            
+            Collections.reverse(rows);
+
+            for (Object[] row : rows) {
                 tableModel.addRow(row);
             }
             
@@ -127,7 +164,7 @@ public class MainView extends javax.swing.JFrame {
      */
     private void loadTotalBalance() {
         try {
-            double totalBalance = FinancialControl.checkTotalBalance();
+            BigDecimal totalBalance = FinancialControl.checkTotalBalance();
             jTotalBalance.setText("Saldo total é " + ConverterUtils.formatToCurrency(totalBalance));    
         } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo total", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -140,7 +177,7 @@ public class MainView extends javax.swing.JFrame {
      */
     private void loadCurrentBalance(LocalDateTime dateTime) {
         try {
-            double currentBalance = FinancialControl.checkCurrentBalance(dateTime);
+            BigDecimal currentBalance = FinancialControl.checkCurrentBalance(dateTime);
             jBalanceResult.setText("Seu saldo é " + ConverterUtils.formatToCurrency(currentBalance));    
         } catch (ArithmeticException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao formatar o saldo atual", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -340,7 +377,7 @@ public class MainView extends javax.swing.JFrame {
             .addGroup(jMainLayout.createSequentialGroup()
                 .addContainerGap(66, Short.MAX_VALUE)
                 .addComponent(jIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(100, 100, 100)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                 .addComponent(jExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
                 .addComponent(jCheckBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -363,7 +400,7 @@ public class MainView extends javax.swing.JFrame {
                     .addComponent(jExpense, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jCheckBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(44, 44, 44)
+                .addGap(45, 45, 45)
                 .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jReleasesByDateTitle)
                     .addComponent(jTotalBalance))

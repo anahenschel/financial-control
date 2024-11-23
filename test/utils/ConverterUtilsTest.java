@@ -6,11 +6,10 @@ package utils;
 
 import enums.ExpenseCategory;
 import enums.IncomeCategory;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,70 +20,56 @@ import static org.junit.Assert.*;
 public class ConverterUtilsTest {
 
     @Test
-    public void testWithCommaAndDot() {
-        String[] amountsText = {"10,90", "10.90"};
-        List<Double> amounts = new ArrayList<>();
-
-        for (String amountText : amountsText) {
-            amounts.add(ConverterUtils.convertToAmount(amountText));
-        }
-
-        List<Double> amountExpected = List.of(10.90, 10.90);
-
-        assertEquals(amountExpected, amounts);
-    }
-
-    @Test
     public void testWhenIsLargeAmount() {
         String amountText = "111222333444555,99";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
 
-        assertEquals(111222333444555.99, amount, 0);
+        assertEquals(new BigDecimal("111222333444555.99"), amount);
     }
 
     @Test
     public void testConvertToAmount() {
         String amountText = "10";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
 
-        assertEquals(10, amount, 0);
+        assertEquals(new BigDecimal(amountText), amount);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWith16DigitsBeforeDecimal() {
         String amountText = "1112223334445556,99";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWith3DigitsAfterDecimal() {
         String amountText = "10,123";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test(expected = NumberFormatException.class)
     public void testWithInvalidCharacters() {
         String amountText = "*-94^^a";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWithNegativeValue() {
         String amountText = "-1";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testWithZero() {
         String amountText = "0";
 
-        double amount = ConverterUtils.convertToAmount(amountText);
+        BigDecimal amount = ConverterUtils.convertToAmount(amountText);
     }
 
     @Test
@@ -173,7 +158,7 @@ public class ConverterUtilsTest {
 
     @Test
     public void testFormatToCurrency() {
-        double amount = 0;
+        BigDecimal amount = BigDecimal.ZERO;
         String amountText = ConverterUtils.formatToCurrency(amount);
 
         assertEquals("R$ 0,00", amountText);
@@ -185,5 +170,30 @@ public class ConverterUtilsTest {
         String dateString = ConverterUtils.formatToDate(dateTime);
 
         assertEquals("01/01/2024", dateString);
+    }
+    
+    @Test
+    public void testFormatAmountInput() {
+        char keyChar = '2';
+        String amountText = "000.000.000.000.097,54";
+        String resultInput = ConverterUtils.formatAmountInput(amountText, keyChar);
+        
+        assertEquals("000.000.000.000.975,42", resultInput);
+    }
+    
+    @Test
+    public void testFormatAmountOnDelete() {
+        String amountText = "000.000.000.000.975,4 ";
+        String amountFormatted = ConverterUtils.formatAmountOnDelete(amountText);
+        
+        assertEquals("000.000.000.000.097,54", amountFormatted);
+    }
+    
+    @Test
+    public void testFormatAmountOnDeleteAll() {
+        String amountText = "   .   .   .   .   ,  ";
+        String amountFormatted = ConverterUtils.formatAmountOnDelete(amountText);
+        
+        assertEquals("000.000.000.000.000,00", amountFormatted);
     }
 }

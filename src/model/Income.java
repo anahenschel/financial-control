@@ -6,6 +6,7 @@ package model;
 
 import enums.IncomeCategory;
 import enums.LaunchType;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -21,7 +22,7 @@ public class Income extends Launch {
      *
      */
     public Income() {
-        super(null, 0, LaunchType.INCOME);
+        super(null, BigDecimal.ZERO, LaunchType.INCOME, BigDecimal.ZERO);
     }
 	
     /**
@@ -31,10 +32,11 @@ public class Income extends Launch {
      * @param dateTime A data e hora da receita, representada por um objeto LocalDateTime.
      * @param amount O valor da receita.
      * @param incomeCategory A categoria da receita, representada por um objeto IncomeCategory.
+     * @param totalBalance Saldo total quando foi realizada a transação
      *
      */
-    public Income(LocalDateTime dateTime, double amount, IncomeCategory incomeCategory) {
-	super(dateTime, amount, LaunchType.INCOME);
+    public Income(LocalDateTime dateTime, BigDecimal amount, IncomeCategory incomeCategory, BigDecimal totalBalance) {
+	super(dateTime, amount, LaunchType.INCOME, totalBalance);
 	this.incomeCategory = incomeCategory;
     }
 	
@@ -49,7 +51,6 @@ public class Income extends Launch {
 
     /**
      * Define a categoria da receita para esta instância do Income.
-     *
      *
      * @param incomeCategory A categoria da receita, representada por um objeto IncomeCategory.
      * @throws IllegalArgumentException se incomeCategory for null ou igual a IncomeCategory.DEFAULT.

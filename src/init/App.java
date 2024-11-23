@@ -29,7 +29,7 @@ public class App extends javax.swing.JFrame {
      */
     private void init() {
         try {
-            PersistenceCSVImpl.getPersistenceCSVImpl().createFile();
+            PersistenceCSVImpl.getPersistenceCSVImpl().createFile("launch.csv");
             showMainView();
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -42,8 +42,8 @@ public class App extends javax.swing.JFrame {
      */
     private void showMainView() {
         MainView mainView = MainView.getMainView();
-        mainView.screen();
         mainView.resetInteractions();
+        mainView.screen();
         mainView.setVisible(true);
     }
     
