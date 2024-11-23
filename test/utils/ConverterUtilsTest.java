@@ -171,4 +171,29 @@ public class ConverterUtilsTest {
 
         assertEquals("01/01/2024", dateString);
     }
+    
+    @Test
+    public void testFormatAmountInput() {
+        char keyChar = '2';
+        String amountText = "000.000.000.000.097,54";
+        String resultInput = ConverterUtils.formatAmountInput(amountText, keyChar);
+        
+        assertEquals("000.000.000.000.975,42", resultInput);
+    }
+    
+    @Test
+    public void testFormatAmountOnDelete() {
+        String amountText = "000.000.000.000.975,4 ";
+        String amountFormatted = ConverterUtils.formatAmountOnDelete(amountText);
+        
+        assertEquals("000.000.000.000.097,54", amountFormatted);
+    }
+    
+    @Test
+    public void testFormatAmountOnDeleteAll() {
+        String amountText = "   .   .   .   .   ,  ";
+        String amountFormatted = ConverterUtils.formatAmountOnDelete(amountText);
+        
+        assertEquals("000.000.000.000.000,00", amountFormatted);
+    }
 }

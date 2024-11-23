@@ -134,17 +134,17 @@ public class ConverterUtils {
      * separadores de milhar e vírgula como separador decimal. Garantindo também que
      * não exceda a quantidade máxima de caracteres.
      *
-     * @param jAmount O JTextField onde o valor monetário está sendo digitado.
-     * @param keyChar Char do caracter informado pelo usuário
-     * @return O valor formatado
+     * @param amountText O JTextField onde o valor monetário está sendo digitado.
+     * @param evt O evento de tecla KeyEvent acionado pela tecla pressionada
+     * pelo usuário.
      * @throws NumberFormatException Se o texto no `JTextField` não puder ser
      * analisado como um valor numérico.
      * @throws IllegalFormatException se o valor para formatar foi inválido
      */
-    public static String formatAmountInput(String jAmount, char keyChar) throws NumberFormatException, IllegalFormatException {
-        String text = jAmount.replace(".", "").replace(",", "");
+    public static String formatAmountInput(String amountText, char keyChar) throws NumberFormatException, IllegalFormatException {
+        String text = amountText.replace(".", "").replace(",", "");
         
-        if (jAmount.contains(" ")) {
+        if (amountText.contains(" ")) {
             text = "0";
             text = addLeadingZeroToAmount(text);
         }
