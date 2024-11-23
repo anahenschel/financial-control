@@ -42,8 +42,8 @@ public class App extends javax.swing.JFrame {
      */
     private void showMainView() {
         MainView mainView = MainView.getMainView();
-        mainView.screen();
         mainView.resetInteractions();
+        mainView.screen();
         mainView.setVisible(true);
     }
     

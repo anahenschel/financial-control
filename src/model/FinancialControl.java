@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import utils.ConverterUtils;
@@ -87,7 +87,7 @@ public class FinancialControl {
                 }
             }
 
-            listIncome.sort(Comparator.comparing(Launch::getDateTime).reversed());
+            Collections.sort(listIncome);
         } catch (IOException ex) {
             throw new IOException("Erro ao listar os registros!");
         }
@@ -119,7 +119,7 @@ public class FinancialControl {
                 }
             }
 
-            listExpense.sort(Comparator.comparing(Launch::getDateTime).reversed());
+            Collections.sort(listExpense);
         } catch (IOException ex) {
             throw new IOException("Erro ao listar os registros!");
         }
@@ -162,7 +162,7 @@ public class FinancialControl {
                 }
             }
 
-            listLaunchByFilter.sort(Comparator.comparing(Launch::getDateTime).reversed());
+            Collections.sort(listLaunchByFilter);
         } catch (IOException ex) {
             throw new IOException("Erro ao listar os registros!");
         }

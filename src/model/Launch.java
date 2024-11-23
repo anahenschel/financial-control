@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  *
  * @author nponcio
  */
-public abstract class Launch {
+public abstract class Launch implements Comparable<Launch> {
     private LocalDateTime dateTime;
     private BigDecimal amount;
     private LaunchType type;
@@ -25,7 +25,7 @@ public abstract class Launch {
      * @param dateTime A data e hora do lançamento, representada por um objeto LocalDateTime.
      * @param amount O valor do lançamento.
      * @param type O tipo do lançamento, representado por um objeto LaunchType.
-     * @param totalBalance
+     * @param totalBalance Saldo total quando foi realizado a transação
      *
      * @throws IllegalArgumentException se type for LaunchType.ALL.
      */
@@ -119,11 +119,34 @@ public abstract class Launch {
         this.type = type;
     }    
 
+    /**
+     * Obtém o saldo total.
+     *
+     * @return o saldo total como um BigDecimal.
+     */
     public BigDecimal getTotalBalance() {
         return totalBalance;
     }
 
+    /**
+     * Define o saldo total.
+     *
+     * @param totalBalance o novo saldo total a ser definido, representado como um BigDecimal.
+     */
     public void setTotalBalance(BigDecimal totalBalance) {
         this.totalBalance = totalBalance;
+    }
+
+    /**
+     * Compara este objeto Launch com outro objeto Launch 
+     * com base no atributo dateTime.
+     *
+     * @param launch o objeto Launch a ser comparado.
+     * @return um valor negativo, zero ou positivo se este objeto for 
+     * respectivamente anterior, igual ou posterior ao objeto launch fornecido.
+     */
+    @Override
+    public int compareTo(Launch launch) {
+       return launch.dateTime.compareTo(this.dateTime);
     }
 }

@@ -6,7 +6,6 @@ package utils;
 
 import enums.ExpenseCategory;
 import enums.IncomeCategory;
-import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -17,7 +16,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.IllegalFormatException;
 import java.util.Locale;
-import javax.swing.JTextField;
 
 /**
  *
@@ -165,6 +163,7 @@ public class ConverterUtils {
      * Adiciona zeros a esquerda ao excluir um caracter do valor
      * 
      * @param amountText String com o valor monetário
+     * @return O valor formatado
      * @throws NumberFormatException se o valor númerico for inválido
      * @throws IllegalFormatException se o valor para formatar foi inválido
      */
@@ -206,15 +205,13 @@ public class ConverterUtils {
      * @throws IllegalFormatException se o valor para formatar foi inválido
      */
     private static String formatAmountToView(String amountWithoutFormat) throws NumberFormatException, IllegalFormatException {
-        String formattedAmount = "";
-
-        return formattedAmount = String.format("%03d.%03d.%03d.%03d.%03d,%02d",
-                Integer.parseInt(amountWithoutFormat.substring(0, 3)),
-                Integer.parseInt(amountWithoutFormat.substring(3, 6)),
-                Integer.parseInt(amountWithoutFormat.substring(6, 9)),
-                Integer.parseInt(amountWithoutFormat.substring(9, 12)),
-                Integer.parseInt(amountWithoutFormat.substring(12, 15)),
-                Integer.parseInt(amountWithoutFormat.substring(15, 17)));
+        return String.format("%03d.%03d.%03d.%03d.%03d,%02d",
+            Integer.parseInt(amountWithoutFormat.substring(0, 3)),
+            Integer.parseInt(amountWithoutFormat.substring(3, 6)),
+            Integer.parseInt(amountWithoutFormat.substring(6, 9)),
+            Integer.parseInt(amountWithoutFormat.substring(9, 12)),
+            Integer.parseInt(amountWithoutFormat.substring(12, 15)),
+            Integer.parseInt(amountWithoutFormat.substring(15, 17)));
     }
     
     /**

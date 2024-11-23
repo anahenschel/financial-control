@@ -9,8 +9,13 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -54,10 +59,10 @@ public class MainView extends javax.swing.JFrame {
      * Método responsável para iniciar junto com a janela
      *
      */
-    public void screen() {
+    public void screen() {        
         loadRelasesByDateTable();
         loadTotalBalance();
-        loadCurrentBalance(LocalDateTime.now());
+        loadCurrentBalance(getLocalDateByJDate());
     }
     
     /**
@@ -69,6 +74,24 @@ public class MainView extends javax.swing.JFrame {
         String currentDate = sdf.format(new Date());
         
         jDate.setText(currentDate);
+    }
+    
+    /**
+     * Converte o texto de um campo jDate em um objeto LocalDateTime.
+     * 
+     * @return um LocalDateTime representando a data
+     */
+    private LocalDateTime getLocalDateByJDate() {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate localDate = LocalDate.parse(jDate.getText(), formatter);
+
+            return localDate.atStartOfDay();
+        } catch (DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao formatar a data", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return null;
     }
     
     /**
@@ -88,18 +111,23 @@ public class MainView extends javax.swing.JFrame {
             jReleasesByDateTable.setRowHeight(35);
                         
             List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
-            int amountExpense = 0;
-            int amountIncome = 0;
+            listLauchByFilter.sort(Comparator.comparing(Launch::getDateTime));
+            
+            long amountIncome = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.INCOME)).count();
+            long amountExpense = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.EXPENSE)).count();
+            
+            BigDecimal runningBalance = BigDecimal.ZERO;
+            List<Object[]> rows = new ArrayList<>();
             
             for (Launch launch : listLauchByFilter) {
                 String category = "";
                 
                 if (launch.getType().equals(LaunchType.EXPENSE)) {
                     category = ((Expense) launch).getExpenseCategory().toString();
-                    amountExpense++;
+                    runningBalance = runningBalance.subtract(launch.getAmount());
                 } else if (launch.getType().equals(LaunchType.INCOME)) {
                     category = ((Income) launch).getIncomeCategory().toString();
-                    amountIncome++;
+                    runningBalance = runningBalance.add(launch.getAmount());
                 }
                 
                 Object[] row = {
@@ -107,9 +135,15 @@ public class MainView extends javax.swing.JFrame {
                     ConverterUtils.formatToDate(launch.getDateTime()),
                     launch.getTypeToString(),
                     category,
-                    ConverterUtils.formatToCurrency(launch.getTotalBalance()),
+                    ConverterUtils.formatToCurrency(runningBalance),
                 };
                 
+                rows.add(row);
+            }
+            
+            Collections.reverse(rows);
+
+            for (Object[] row : rows) {
                 tableModel.addRow(row);
             }
             
