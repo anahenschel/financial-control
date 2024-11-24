@@ -76,8 +76,6 @@ public class PersistenceCSVImpl implements PersistenceCSV {
             }
             
             writer.println(data.toString());
-        } catch (IOException e) {
-            throw new IOException("Erro ao gravar o registro no arquivo");
         }
     }
 
