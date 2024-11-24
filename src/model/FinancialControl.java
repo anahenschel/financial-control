@@ -239,9 +239,13 @@ public class FinancialControl {
      * @throws FileNotFoundException Se o arquivo de origem não for encontrado.
      * @throws IOException Se ocorrer um erro de entrada/saída durante o processo de leitura ou escrita do arquivo.
      */
-    public static void exportSaveFile(JFileChooser fileChooser) throws FileNotFoundException, IOException {
-        File directory = fileChooser.getSelectedFile();
+    public static void exportSaveFile(File selectedDirectory) throws FileNotFoundException, IOException {
         File sourceFile = PersistenceCSVImpl.getPersistenceCSVImpl().getLaunchFile();
+        File directory = selectedDirectory;
+        
+        if (!directory.exists()) {
+            throw new FileNotFoundException("O sistema não pode encontrar o caminho especificado");
+        }
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         String currentDate = sdf.format(new Date());

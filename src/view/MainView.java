@@ -6,6 +6,7 @@ package view;
 
 import enums.LaunchType;
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -63,6 +64,7 @@ public class MainView extends javax.swing.JFrame {
         loadRelasesByDateTable();
         loadTotalBalance();
         loadCurrentBalance(getLocalDateByJDate());
+        toggleExportButton();
     }
     
     /**
@@ -153,7 +155,7 @@ public class MainView extends javax.swing.JFrame {
             jReleasesByDateTable.setVisible(false);
             jReleasesByDateTable.setVisible(true);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Ocorreu um erro ao carregar as informações. Tente novamente, se o erro persistir, contacte o administrador do sistema.", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -183,6 +185,19 @@ public class MainView extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Verifica se o botão de exportar deve estar habilitado ou desabilitado, se já existir
+     * alguma transação, habilita o botão.
+     */
+    private void toggleExportButton() {
+        try {
+            List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
+            jExportFileButton.setEnabled(listLauchByFilter.size() > 0);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     /**
      * Mostra a janela de adicionar uma nova entrada
      *
@@ -237,8 +252,10 @@ public class MainView extends javax.swing.JFrame {
         int userSelection = fileChooser.showSaveDialog(null);
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             try {
-                FinancialControl.exportSaveFile(fileChooser);
+                FinancialControl.exportSaveFile(fileChooser.getSelectedFile());
                 JOptionPane.showMessageDialog(this, "Arquivo salvo com sucesso");
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Erro ao salvar o arquivo", "Erro", JOptionPane.ERROR_MESSAGE);
             }
@@ -409,6 +426,11 @@ public class MainView extends javax.swing.JFrame {
                 jExportFileButtonMouseClicked(evt);
             }
         });
+        jExportFileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jExportFileButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jMainLayout = new javax.swing.GroupLayout(jMain);
         jMain.setLayout(jMainLayout);
@@ -484,9 +506,15 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_jDateKeyPressed
 
     private void jExportFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jExportFileButtonMouseClicked
-        jExportFileButton.setSelected(false);
-        exportFile();
+        if (jExportFileButton.isEnabled()) {
+            jExportFileButton.setSelected(false);
+            exportFile();
+        }
     }//GEN-LAST:event_jExportFileButtonMouseClicked
+
+    private void jExportFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jExportFileButtonActionPerformed
+        toggleExportButton();
+    }//GEN-LAST:event_jExportFileButtonActionPerformed
 
     /**
      * @param args the command line arguments

@@ -26,6 +26,7 @@ public class PersistenceCSVImpl implements PersistenceCSV {
     private static PersistenceCSVImpl persistenceCSV;
     
     private static final String ADD_COLUMN = ";";
+    private static final String UTF8_BOM = "\uFEFF";
     private File launchFile;
     
     /**
@@ -48,6 +49,7 @@ public class PersistenceCSVImpl implements PersistenceCSV {
         if (!launchFile.exists()) {
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(launchFile), "UTF-8"))) {
                 String[] headers = {"launchType", "category", "dateTime", "amount"};
+                writer.write(UTF8_BOM);
                 writer.write(String.join(ADD_COLUMN, headers));
                 writer.newLine();
             } catch (IOException ex) {
