@@ -155,7 +155,7 @@ public class MainView extends javax.swing.JFrame {
             jReleasesByDateTable.setVisible(false);
             jReleasesByDateTable.setVisible(true);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Ocorreu um erro ao carregar as informações. Tente novamente, se o erro persistir, contacte o administrador do sistema.", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
