@@ -42,7 +42,7 @@ public class PersistenceCSVImplTest {
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
        
-        assertEquals("launchType;category;dateTime;amount", linhas.get(0));
+        assertEquals("\uFEFFlaunchType;category;dateTime;amount", linhas.get(0));
     }
     
     @Test(expected = IOException.class)
@@ -58,7 +58,7 @@ public class PersistenceCSVImplTest {
         
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
-        assertEquals("INCOME;Salário;2024-01-01T00:00;5000", linhas.get(1));
+        assertEquals("Receita;Salário;2024-01-01T00:00;5000", linhas.get(1));
     };
 
     @Test
@@ -69,7 +69,7 @@ public class PersistenceCSVImplTest {
 
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
-        assertEquals("EXPENSE;Serviços;2024-01-01T00:00;1000", linhas.get(1));
+        assertEquals("Despesa;Serviços;2024-01-01T00:00;1000", linhas.get(1));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class PersistenceCSVImplTest {
 
         for (Object register : listAll) {
             if (register instanceof String[] columns) {
-                 LaunchType launchType = LaunchType.valueOf(columns[0]);
+                 LaunchType launchType = LaunchType.fromDescription(columns[0]);
                  typeRegisters.add(launchType);
             }
         }
@@ -108,7 +108,7 @@ public class PersistenceCSVImplTest {
 
         for (Object register : listAll) {
             if (register instanceof String[] columns) {
-                 LaunchType launchType = LaunchType.valueOf(columns[0]);
+                 LaunchType launchType = LaunchType.fromDescription(columns[0]);
                  typeRegisters.add(launchType);
             }
         }
@@ -130,7 +130,7 @@ public class PersistenceCSVImplTest {
 
         for (Object register : listAll) {
             if (register instanceof String[] columns) {
-                 LaunchType launchType = LaunchType.valueOf(columns[0]);
+                 LaunchType launchType = LaunchType.fromDescription(columns[0]);
                  typeRegisters.add(launchType);
             }
         }

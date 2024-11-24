@@ -235,7 +235,7 @@ public class FinancialControl {
      * 
      * @param fileChooser O componente JFileChooser usado para selecionar o diretório de destino.
      * 
-     * @throws FileNotFoundException Se o arquivo de origem não for encontrado.
+     * @throws FileNotFoundException Se o arquivo de origem ou o diretório nao forem encontrados.
      * @throws IOException Se ocorrer um erro de entrada/saída durante o processo de leitura ou escrita do arquivo.
      */
     public static void exportSaveFile(File selectedDirectory) throws FileNotFoundException, IOException {
