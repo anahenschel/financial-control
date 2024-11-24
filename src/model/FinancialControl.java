@@ -144,7 +144,7 @@ public class FinancialControl {
 
             for (Object register : listRegisters) {
                 if (register instanceof String[] columns) {
-                    LaunchType launchType = LaunchType.valueOf(columns[0]);
+                    LaunchType launchType = LaunchType.fromDescription(columns[0]);
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
                     BigDecimal amount = new BigDecimal(columns[3]);
 

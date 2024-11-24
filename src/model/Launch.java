@@ -87,20 +87,6 @@ public abstract class Launch implements Comparable<Launch> {
     public LaunchType getType() {
         return type;
     }
-    
-    /**
-     * Retorna uma representação em string do tipo de lançamento (receita ou despesa).
-     * 
-     * @return Uma string que representa o tipo do lançamento: "Despesa" ou "Receita", 
-     *         ou uma string vazia se o tipo for desconhecido.
-     */
-    public String getTypeToString() {
-        return switch (getType()) {
-            case EXPENSE -> "Despesa";
-            case INCOME -> "Receita";
-            default -> "";
-        };
-    }
 
     /**
      * Define o tipo do lançamento.

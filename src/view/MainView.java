@@ -132,7 +132,7 @@ public class MainView extends javax.swing.JFrame {
                 Object[] row = {
                     ConverterUtils.formatToCurrency(launch.getAmount()),
                     ConverterUtils.formatToDate(launch.getDateTime()),
-                    launch.getTypeToString(),
+                    launch.getType(),
                     category,
                     ConverterUtils.formatToCurrency(runningBalance),
                 };
