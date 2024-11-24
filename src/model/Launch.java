@@ -16,7 +16,6 @@ public abstract class Launch implements Comparable<Launch> {
     private LocalDateTime dateTime;
     private BigDecimal amount;
     private LaunchType type;
-    private BigDecimal totalBalance;
     
     /**
      * Construtor para a classe Launch que inicializa uma nova instância 
@@ -25,14 +24,12 @@ public abstract class Launch implements Comparable<Launch> {
      * @param dateTime A data e hora do lançamento, representada por um objeto LocalDateTime.
      * @param amount O valor do lançamento.
      * @param type O tipo do lançamento, representado por um objeto LaunchType.
-     * @param totalBalance Saldo total quando foi realizado a transação
      *
      * @throws IllegalArgumentException se type for LaunchType.ALL.
      */
-    public Launch(LocalDateTime dateTime, BigDecimal amount, LaunchType type, BigDecimal totalBalance) {
+    public Launch(LocalDateTime dateTime, BigDecimal amount, LaunchType type) {
         this.dateTime = dateTime;
         this.amount = amount;
-        this.totalBalance = totalBalance;
         setType(type);
     }
 	
@@ -90,20 +87,6 @@ public abstract class Launch implements Comparable<Launch> {
     public LaunchType getType() {
         return type;
     }
-    
-    /**
-     * Retorna uma representação em string do tipo de lançamento (receita ou despesa).
-     * 
-     * @return Uma string que representa o tipo do lançamento: "Despesa" ou "Receita", 
-     *         ou uma string vazia se o tipo for desconhecido.
-     */
-    public String getTypeToString() {
-        return switch (getType()) {
-            case EXPENSE -> "Despesa";
-            case INCOME -> "Receita";
-            default -> "";
-        };
-    }
 
     /**
      * Define o tipo do lançamento.
@@ -118,25 +101,7 @@ public abstract class Launch implements Comparable<Launch> {
         
         this.type = type;
     }    
-
-    /**
-     * Obtém o saldo total.
-     *
-     * @return o saldo total como um BigDecimal.
-     */
-    public BigDecimal getTotalBalance() {
-        return totalBalance;
-    }
-
-    /**
-     * Define o saldo total.
-     *
-     * @param totalBalance o novo saldo total a ser definido, representado como um BigDecimal.
-     */
-    public void setTotalBalance(BigDecimal totalBalance) {
-        this.totalBalance = totalBalance;
-    }
-
+    
     /**
      * Compara este objeto Launch com outro objeto Launch 
      * com base no atributo dateTime.

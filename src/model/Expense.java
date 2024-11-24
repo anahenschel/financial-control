@@ -22,7 +22,7 @@ public class Expense extends Launch {
      *
      */
     public Expense() {
-        super(null, BigDecimal.ZERO, LaunchType.EXPENSE, BigDecimal.ZERO);
+        super(null, BigDecimal.ZERO, LaunchType.EXPENSE);
     }
 	
     /**
@@ -32,11 +32,10 @@ public class Expense extends Launch {
      * @param dateTime A data e hora da despesa, representada pelo objeto LocalDateTime.
      * @param amount O valor da despesa.
      * @param expenseCategory A categoria da despesa, representada pelo objeto ExpenseCategory.
-     * @param totalBalance Saldo total quando foi realizada a transação
      *
      */
-    public Expense(LocalDateTime dateTime, BigDecimal amount, ExpenseCategory expenseCategory, BigDecimal totalBalance) {
-	super(dateTime, amount, LaunchType.EXPENSE, totalBalance);
+    public Expense(LocalDateTime dateTime, BigDecimal amount, ExpenseCategory expenseCategory) {
+	super(dateTime, amount, LaunchType.EXPENSE);
         this.expenseCategory = expenseCategory;
     }
 	

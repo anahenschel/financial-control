@@ -6,6 +6,7 @@ package view;
 
 import enums.LaunchType;
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -15,9 +16,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Expense;
@@ -63,6 +64,7 @@ public class MainView extends javax.swing.JFrame {
         loadRelasesByDateTable();
         loadTotalBalance();
         loadCurrentBalance(getLocalDateByJDate());
+        toggleExportButton();
     }
     
     /**
@@ -111,7 +113,6 @@ public class MainView extends javax.swing.JFrame {
             jReleasesByDateTable.setRowHeight(35);
                         
             List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
-            listLauchByFilter.sort(Comparator.comparing(Launch::getDateTime));
             
             long amountIncome = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.INCOME)).count();
             long amountExpense = listLauchByFilter.stream().filter(launch -> launch.getType().equals(LaunchType.EXPENSE)).count();
@@ -133,7 +134,7 @@ public class MainView extends javax.swing.JFrame {
                 Object[] row = {
                     ConverterUtils.formatToCurrency(launch.getAmount()),
                     ConverterUtils.formatToDate(launch.getDateTime()),
-                    launch.getTypeToString(),
+                    launch.getType(),
                     category,
                     ConverterUtils.formatToCurrency(runningBalance),
                 };
@@ -185,6 +186,19 @@ public class MainView extends javax.swing.JFrame {
     }
     
     /**
+     * Verifica se o botão de exportar deve estar habilitado ou desabilitado, se já existir
+     * alguma transação, habilita o botão.
+     */
+    private void toggleExportButton() {
+        try {
+            List<Launch> listLauchByFilter = FinancialControl.listReleasesOrderByDate();
+            jExportFileButton.setEnabled(listLauchByFilter.size() > 0);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
      * Mostra a janela de adicionar uma nova entrada
      *
      */
@@ -208,12 +222,43 @@ public class MainView extends javax.swing.JFrame {
         dispose();
     }
     
+    /**
+     * Valida a data inserida em um campo de texto e carrega o saldo atual se a data for válida.
+     * 
+     * @throws DateTimeParseException se o texto da data não puder ser convertido para um LocalDateTime.
+     * @throws IllegalArgumentException se o texto da data contiver argumentos inválidos para a conversão.
+     */
     private void isValidDate() {
         try {
             LocalDateTime dateTime = ConverterUtils.convertToLocalDateTime(jDate.getText());
             loadCurrentBalance(dateTime);
         } catch (DateTimeParseException | IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    /**
+     * Exibe uma janela de seleção de diretório para o usuário escolher onde salvar um arquivo CSV.
+     * Após a escolha, o método chama a função exportSaveFile(JFileChooser) 
+     * para salvar o arquivo no diretório selecionado. O nome do arquivo será gerado automaticamente 
+     * com base na data e hora atual, e o arquivo contém informações de lançamentos.
+     * 
+     */
+    private void exportFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Escolha onde salvar o arquivo");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        int userSelection = fileChooser.showSaveDialog(null);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            try {
+                FinancialControl.exportSaveFile(fileChooser.getSelectedFile());
+                JOptionPane.showMessageDialog(this, "Arquivo salvo com sucesso");
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Erro ao salvar o arquivo", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     
@@ -241,6 +286,7 @@ public class MainView extends javax.swing.JFrame {
         jDate = new javax.swing.JFormattedTextField();
         jBalanceResult = new javax.swing.JLabel();
         jTotalBalance = new javax.swing.JLabel();
+        jExportFileButton = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -323,6 +369,7 @@ public class MainView extends javax.swing.JFrame {
 
         jReleasesByDateTitle.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jReleasesByDateTitle.setText("Lançamentos (ordenados por data)");
+        jReleasesByDateTitle.setPreferredSize(new java.awt.Dimension(278, 40));
 
         jCheckBalance.setBorder(javax.swing.BorderFactory.createTitledBorder("Consultar Saldo - Pressione 'Enter' para atualizar o saldo"));
 
@@ -369,26 +416,43 @@ public class MainView extends javax.swing.JFrame {
         jTotalBalance.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTotalBalance.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jTotalBalance.setText("Saldo total é R$ 0000,00");
+        jTotalBalance.setPreferredSize(new java.awt.Dimension(195, 40));
+
+        jExportFileButton.setText("Exportar");
+        jExportFileButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jExportFileButton.setPreferredSize(new java.awt.Dimension(111, 40));
+        jExportFileButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jExportFileButtonMouseClicked(evt);
+            }
+        });
+        jExportFileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jExportFileButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jMainLayout = new javax.swing.GroupLayout(jMain);
         jMain.setLayout(jMainLayout);
         jMainLayout.setHorizontalGroup(
             jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jMainLayout.createSequentialGroup()
-                .addContainerGap(66, Short.MAX_VALUE)
+                .addContainerGap(95, Short.MAX_VALUE)
                 .addComponent(jIncome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
                 .addComponent(jExpense, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
                 .addComponent(jCheckBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addContainerGap(95, Short.MAX_VALUE))
             .addGroup(jMainLayout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jMainLayout.createSequentialGroup()
-                        .addComponent(jReleasesByDateTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jReleasesByDateTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTotalBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTotalBalance, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
+                        .addComponent(jExportFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1))
                 .addGap(27, 27, 27))
         );
@@ -401,11 +465,12 @@ public class MainView extends javax.swing.JFrame {
                     .addComponent(jIncome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jCheckBalance, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(45, 45, 45)
-                .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jReleasesByDateTitle)
-                    .addComponent(jTotalBalance))
+                .addGroup(jMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTotalBalance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jReleasesByDateTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jExportFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
                 .addGap(45, 45, 45))
         );
 
@@ -439,6 +504,17 @@ public class MainView extends javax.swing.JFrame {
             isValidDate();
         }
     }//GEN-LAST:event_jDateKeyPressed
+
+    private void jExportFileButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jExportFileButtonMouseClicked
+        if (jExportFileButton.isEnabled()) {
+            jExportFileButton.setSelected(false);
+            exportFile();
+        }
+    }//GEN-LAST:event_jExportFileButtonMouseClicked
+
+    private void jExportFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jExportFileButtonActionPerformed
+        toggleExportButton();
+    }//GEN-LAST:event_jExportFileButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -485,6 +561,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JLabel jDateLabel;
     private javax.swing.JPanel jExpense;
     private javax.swing.JLabel jExpenseTitle;
+    private javax.swing.JToggleButton jExportFileButton;
     private javax.swing.JPanel jIncome;
     private javax.swing.JLabel jIncomeTitle;
     private javax.swing.JPanel jMain;

@@ -128,9 +128,8 @@ public class AddIncomeView extends javax.swing.JFrame {
             IncomeCategory incomeCategory = (IncomeCategory) jIncomeCategory.getSelectedItem();
             ConverterUtils.validCategory(incomeCategory, null);
             BigDecimal amount = ConverterUtils.convertToAmount(jAmount.getText());
-            BigDecimal totalBalance = FinancialControl.checkCurrentBalance(dateTime).add(amount);
 
-            FinancialControl.createIncome(amount, incomeCategory, dateTime, totalBalance);
+            FinancialControl.createIncome(amount, incomeCategory, dateTime);
             JOptionPane.showMessageDialog(this, "Receita adicionada com sucesso");
 
             listIncome();
@@ -348,8 +347,8 @@ public class AddIncomeView extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
 
         pack();

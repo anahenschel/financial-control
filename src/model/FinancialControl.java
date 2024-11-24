@@ -7,11 +7,18 @@ package model;
 import enums.ExpenseCategory;
 import enums.IncomeCategory;
 import enums.LaunchType;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import utils.ConverterUtils;
@@ -30,15 +37,13 @@ public class FinancialControl {
      * @param amount O valor da receita
      * @param incomeCategory A categoria da receita
      * @param dateTime A data e hora da receita
-     * @param totalBalance
      * @throws java.io.IOException
      */
-    public static void createIncome(BigDecimal amount, IncomeCategory incomeCategory, LocalDateTime dateTime, BigDecimal totalBalance) throws IOException {
+    public static void createIncome(BigDecimal amount, IncomeCategory incomeCategory, LocalDateTime dateTime) throws IOException {
         Income income = new Income();
         income.setDateTime(dateTime);
         income.setAmount(amount);
         income.setIncomeCategory(incomeCategory);
-        income.setTotalBalance(totalBalance);
         
         persistenceCSVImpl.saveRegister(income, null);
     }
@@ -49,15 +54,13 @@ public class FinancialControl {
      * @param amount O valor da despesa
      * @param expenseCategory A categoria da despesa
      * @param dateTime A data e hora da despesa
-     * @param totalBalance
      * @throws java.io.IOException
      */
-    public static void createExpense(BigDecimal amount, ExpenseCategory expenseCategory, LocalDateTime dateTime, BigDecimal totalBalance) throws IOException {
+    public static void createExpense(BigDecimal amount, ExpenseCategory expenseCategory, LocalDateTime dateTime) throws IOException {
         Expense expense = new Expense();
         expense.setDateTime(dateTime);
         expense.setAmount(amount);
         expense.setExpenseCategory(expenseCategory);
-        expense.setTotalBalance(totalBalance);
         
         persistenceCSVImpl.saveRegister(null, expense);
     }
@@ -78,10 +81,9 @@ public class FinancialControl {
                 if (register instanceof String[] columns) {
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
                     BigDecimal amount = new BigDecimal(columns[3]);
-                    BigDecimal totalBalance = new BigDecimal(columns[4]);
 
                     IncomeCategory incomeCategory = IncomeCategory.fromDescription(columns[1]);
-                    Income income = new Income(localDateTime, amount, incomeCategory, totalBalance);
+                    Income income = new Income(localDateTime, amount, incomeCategory);
 
                     listIncome.add(income);
                 }
@@ -110,10 +112,9 @@ public class FinancialControl {
                 if (register instanceof String[] columns) {
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
                     BigDecimal amount = new BigDecimal(columns[3]);
-                    BigDecimal totalBalance = new BigDecimal(columns[4]);
                     
                     ExpenseCategory expenseCategory = ExpenseCategory.fromDescription(columns[1]);
-                    Expense expense = new Expense(localDateTime, amount, expenseCategory, totalBalance);
+                    Expense expense = new Expense(localDateTime, amount, expenseCategory);
 
                     listExpense.add(expense);
                 }
@@ -142,18 +143,17 @@ public class FinancialControl {
 
             for (Object register : listRegisters) {
                 if (register instanceof String[] columns) {
-                    LaunchType launchType = LaunchType.valueOf(columns[0]);
+                    LaunchType launchType = LaunchType.fromDescription(columns[0]);
                     LocalDateTime localDateTime = ConverterUtils.parseIsoDateTime(columns[2]);
                     BigDecimal amount = new BigDecimal(columns[3]);
-                    BigDecimal totalBalance = new BigDecimal(columns[4]);
 
                     Launch launch;
                     if (launchType == LaunchType.INCOME) {
                         IncomeCategory incomeCategory = IncomeCategory.fromDescription(columns[1]);
-                        launch = new Income(localDateTime, amount, incomeCategory, totalBalance);
+                        launch = new Income(localDateTime, amount, incomeCategory);
                     } else if (launchType == LaunchType.EXPENSE) {
                         ExpenseCategory expenseCategory = ExpenseCategory.fromDescription(columns[1]);
-                        launch = new Expense(localDateTime, amount, expenseCategory, totalBalance);
+                        launch = new Expense(localDateTime, amount, expenseCategory);
                     } else {
                         continue;
                     }
@@ -162,7 +162,7 @@ public class FinancialControl {
                 }
             }
 
-            Collections.sort(listLaunchByFilter);
+            listLaunchByFilter.sort(Comparator.comparing(Launch::getDateTime));
         } catch (IOException ex) {
             throw new IOException("Erro ao listar os registros!");
         }
@@ -226,5 +226,39 @@ public class FinancialControl {
         }
 
         return totalBalance;
+    }
+    
+    /**
+     * Salva uma cópia de um arquivo CSV contendo lançamentos em um diretório especificado pelo usuário.
+     * O arquivo gerado terá o nome no formato "lancamentos-dd-MM-yyyy-HH-mm-ss.csv", onde o sufixo 
+     * é a data e hora atuais.
+     * 
+     * @param fileChooser O componente JFileChooser usado para selecionar o diretório de destino.
+     * 
+     * @throws FileNotFoundException Se o arquivo de origem ou o diretório nao forem encontrados.
+     * @throws IOException Se ocorrer um erro de entrada/saída durante o processo de leitura ou escrita do arquivo.
+     */
+    public static void exportSaveFile(File selectedDirectory) throws FileNotFoundException, IOException {
+        File sourceFile = PersistenceCSVImpl.getPersistenceCSVImpl().getLaunchFile();
+        File directory = selectedDirectory;
+        
+        if (!directory.exists()) {
+            throw new FileNotFoundException("O sistema não pode encontrar o caminho especificado");
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+        String currentDate = sdf.format(new Date());
+
+        File destinationFile = new File(directory, "lancamentos-" + currentDate + ".csv");
+
+        try (FileInputStream fis = new FileInputStream(sourceFile);
+            FileOutputStream fos = new FileOutputStream(destinationFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                fos.write(buffer, 0, length);
+            }
+        }    
     }
 }
