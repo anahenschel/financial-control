@@ -26,7 +26,7 @@ public class ConverterUtils {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
     /**
-     * Converte uma string em um valor do tipo double.
+     * Converte uma string em um valor do tipo BigDecimal.
      *
      * @param amount A string representando o valor a ser convertido.
      * @return O valor convertido para o tipo BigDecimal.
@@ -107,7 +107,7 @@ public class ConverterUtils {
     }
     
     /**
-     * Formata um valor do tipo double no padrão de moeda, de acordo com a localidade brasileira.
+     * Formata um valor do tipo BigDecimal no padrão de moeda, de acordo com a localidade brasileira.
      *
      * @param amount O valor numérico que será formatado.
      * @return Uma string representando o valor formatado no padrão de moeda brasileira.

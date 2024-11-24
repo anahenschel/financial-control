@@ -174,7 +174,7 @@ public class FinancialControl {
      * Verifica o saldo atual em uma data e hora específica.
      *
      * @param dateTime A data e hora para a qual o saldo atual será verificado.
-     * @return O saldo atual como um valor double para a data e hora
+     * @return O saldo atual como um valor BigDecimal para a data e hora
      * especificada.
      * @throws java.io.IOException
      */
@@ -205,7 +205,7 @@ public class FinancialControl {
     /**
      * Verifica o saldo total acumulado.
      *
-     * @return O saldo total acumulado como um valor double.
+     * @return O saldo total acumulado como um valor BigDecimal.
      * @throws java.io.IOException
      */
     public static BigDecimal checkTotalBalance() throws IOException {
