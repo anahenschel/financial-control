@@ -22,7 +22,7 @@ public class Income extends Launch {
      *
      */
     public Income() {
-        super(null, BigDecimal.ZERO, LaunchType.INCOME, BigDecimal.ZERO);
+        super(null, BigDecimal.ZERO, LaunchType.INCOME);
     }
 	
     /**
@@ -32,11 +32,10 @@ public class Income extends Launch {
      * @param dateTime A data e hora da receita, representada por um objeto LocalDateTime.
      * @param amount O valor da receita.
      * @param incomeCategory A categoria da receita, representada por um objeto IncomeCategory.
-     * @param totalBalance Saldo total quando foi realizada a transação
      *
      */
-    public Income(LocalDateTime dateTime, BigDecimal amount, IncomeCategory incomeCategory, BigDecimal totalBalance) {
-	super(dateTime, amount, LaunchType.INCOME, totalBalance);
+    public Income(LocalDateTime dateTime, BigDecimal amount, IncomeCategory incomeCategory) {
+	super(dateTime, amount, LaunchType.INCOME);
 	this.incomeCategory = incomeCategory;
     }
 	

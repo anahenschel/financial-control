@@ -42,7 +42,7 @@ public class PersistenceCSVImplTest {
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
        
-        assertEquals("launchType;category;dateTime;amount;totalBalance", linhas.get(0));
+        assertEquals("\uFEFFlaunchType;category;dateTime;amount", linhas.get(0));
     }
     
     @Test(expected = IOException.class)
@@ -52,30 +52,30 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso3_SalvarReceita() throws IOException {
-        Income income = new Income(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(5000.0), IncomeCategory.SALARY, new BigDecimal(5000.0));
+        Income income = new Income(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(5000.0), IncomeCategory.SALARY);
 
         persistence.saveRegister(income, null);
         
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
-        assertEquals("INCOME;Salário;2024-01-01T00:00;5000;5000", linhas.get(1));
+        assertEquals("Receita;Salário;2024-01-01T00:00;5000", linhas.get(1));
     };
 
     @Test
     public void testCaso4_SalvarDespesa() throws IOException {
-        Expense expense = new Expense(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(1000.0), ExpenseCategory.SERVICES, new BigDecimal(1000.0));
+        Expense expense = new Expense(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(1000.0), ExpenseCategory.SERVICES);
  
         persistence.saveRegister(null, expense);
 
         File file = persistence.getLaunchFile();
         List<String> linhas = Files.readAllLines(file.toPath()); 
-        assertEquals("EXPENSE;Serviços;2024-01-01T00:00;1000;1000", linhas.get(1));
+        assertEquals("Despesa;Serviços;2024-01-01T00:00;1000", linhas.get(1));
     }
 
     @Test
     public void testCaso5_ListarTodosRegistros() throws IOException {
-        Income income = new Income(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(5000.0), IncomeCategory.SALARY,  new BigDecimal(5000.0));
-        Expense expense = new Expense(LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0), new BigDecimal(1000.0), ExpenseCategory.SERVICES,  new BigDecimal(4000.0));
+        Income income = new Income(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(5000.0), IncomeCategory.SALARY);
+        Expense expense = new Expense(LocalDateTime.of(2024, Month.JANUARY, 2, 0, 0), new BigDecimal(1000.0), ExpenseCategory.SERVICES);
 
         persistence.saveRegister(income, null);
         persistence.saveRegister(null, expense);
@@ -85,7 +85,7 @@ public class PersistenceCSVImplTest {
 
         for (Object register : listAll) {
             if (register instanceof String[] columns) {
-                 LaunchType launchType = LaunchType.valueOf(columns[0]);
+                 LaunchType launchType = LaunchType.fromDescription(columns[0]);
                  typeRegisters.add(launchType);
             }
         }
@@ -97,8 +97,8 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso6_ListarSomenteReceitas() throws IOException {
-        Income income = new Income(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(5000.0), IncomeCategory.SALARY, BigDecimal.ZERO);
-        Expense expense = new Expense(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(1000.0), ExpenseCategory.SERVICES, BigDecimal.ZERO);
+        Income income = new Income(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(5000.0), IncomeCategory.SALARY);
+        Expense expense = new Expense(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(1000.0), ExpenseCategory.SERVICES);
 
         persistence.saveRegister(income, null);
         persistence.saveRegister(null, expense);
@@ -108,7 +108,7 @@ public class PersistenceCSVImplTest {
 
         for (Object register : listAll) {
             if (register instanceof String[] columns) {
-                 LaunchType launchType = LaunchType.valueOf(columns[0]);
+                 LaunchType launchType = LaunchType.fromDescription(columns[0]);
                  typeRegisters.add(launchType);
             }
         }
@@ -119,8 +119,8 @@ public class PersistenceCSVImplTest {
 
     @Test
     public void testCaso7_ListarSomenteDespesas() throws IOException {
-        Income income = new Income(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(5000.0), IncomeCategory.SALARY, BigDecimal.ZERO);
-        Expense expense = new Expense(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(1000.0), ExpenseCategory.SERVICES, BigDecimal.ZERO);
+        Income income = new Income(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(5000.0), IncomeCategory.SALARY);
+        Expense expense = new Expense(LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0), new BigDecimal(1000.0), ExpenseCategory.SERVICES);
 
         persistence.saveRegister(income, null);
         persistence.saveRegister(null, expense);
@@ -130,7 +130,7 @@ public class PersistenceCSVImplTest {
 
         for (Object register : listAll) {
             if (register instanceof String[] columns) {
-                 LaunchType launchType = LaunchType.valueOf(columns[0]);
+                 LaunchType launchType = LaunchType.fromDescription(columns[0]);
                  typeRegisters.add(launchType);
             }
         }
